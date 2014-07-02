@@ -1,5 +1,6 @@
-source "https://rubygems.org"
+source "http://rubygems.org"
 
-gem "rake"
-gem "serverspec"
+gem "rspec"
+gem "puppet"
 gem "puppet-lint"
+gem "beaker-rspec"
