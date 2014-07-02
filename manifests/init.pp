@@ -26,12 +26,15 @@
 # dbtype:      Type of database to use
 
 class reviewboard (
+  $version     = '1.7.24', # Current stable release
   $webprovider = 'puppetlabs/apache',
   $webuser     = undef,
   $dbprovider  = 'puppetlabs/postgresql',
   $dbtype      = 'postgresql'
 ) {
 
-  include reviewboard::package
+  class { 'reviewboard::package':
+    version => $version,
+  }
 
 }

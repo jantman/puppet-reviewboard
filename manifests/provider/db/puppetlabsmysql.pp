@@ -1,4 +1,4 @@
-## \file    manifests/package.pp
+## \file    manifests/provider/db/puppetlabsmysql.pp
 #  \author  Scott Wales <scott.wales@unimelb.edu.au>
 #  \brief
 #
@@ -16,24 +16,30 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-class reviewboard::package (
-  $version = undef,
+# Sets up the site DB using puppetlabs/mysql
+define reviewboard::provider::db::puppetlabsmysql (
+  $dbuser,
+  $dbpass,
+  $dbname,
+  $dbhost = 'localhost',
 ) {
 
-  $base_url = 'http://downloads.reviewboard.org/releases/ReviewBoard'
-  case $version {
-    /^2\.0\./: { $egg_url = "${base_url}/2.0/ReviewBoard-${version}-py2.6.egg" }
-    /^1\.7\./: { $egg_url = "${base_url}/1.7/ReviewBoard-${version}-py2.6.egg" }
-    default: {
-      fail("reviewboard::package has not been tested with Review Board ${version}.")
-    }
+  if $dbhost != 'localhost' {
+    err('Remote db hosts not implemented')
   }
 
-  exec {'easy_install reviewboard':
-    command => "easy_install '${egg_url}'",
-    unless  => "pip freeze | grep 'ReviewBoard==${version}'",
-    path    => ['/bin','/usr/bin' ],
-    require => Package['python-pip'],
+  class { '::mysql::bindings':
+    python_enable => true,
+  }
+
+  class { '::mysql::server':
+    root_password    => $dbpass,
+  }
+
+  ::mysql::db { $dbname:
+    user      => $dbuser,
+    password  => $dbpass,
+    host      => $dbhost,
   }
 
 }

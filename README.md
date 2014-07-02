@@ -37,6 +37,12 @@ Create a reviewboard site based at '/var/www/reviewboard', available at ${::fqdn
         location => '/reviewboard'
     }
 
+You can change the review board version installed with the 'version' argument to the
+reviewboard class. Acceptable values for the version argument look like '1.7.20' or
+'2.0rc1'. You can find a catalog of versions at:
+
+http://downloads.reviewboard.org/releases/ReviewBoard/.
+
 You can change how the sites are configured with the 'provider' arguments to the reviewboard class. 
 
 **webprovider**:
@@ -51,6 +57,7 @@ You can change how the sites are configured with the 'provider' arguments to the
 The default settings are
     
     class reviewboard {
+        version     => '1.7.24',
         webprovider => 'puppetlabs/apache',
         dbprovider  => 'puppetlabs/postgresql'
     }
