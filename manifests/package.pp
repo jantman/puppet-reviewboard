@@ -29,6 +29,12 @@ class reviewboard::package (
     }
   }
 
+  if ! defined(Package['python-pip']) {
+    package {'python-pip':
+      ensure => present,
+    }
+  }
+
   exec {'easy_install reviewboard':
     command => "easy_install '${egg_url}'",
     unless  => "pip freeze | grep 'ReviewBoard==${version}'",
