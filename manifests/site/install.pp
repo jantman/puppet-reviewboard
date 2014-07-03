@@ -34,6 +34,10 @@ define reviewboard::site::install(
 ) {
 
   $site = $name
+  case $location { # A trailing slash is required
+    /\/$/:   { $normalized_location = $location}
+    default: { $normalized_location = "${location}/" }
+  }
 
   $args = [
     '--noinput',
@@ -58,7 +62,7 @@ define reviewboard::site::install(
     require => Class[reviewboard::package],
     command => "rb-site install ${site} ${argstr}",
     path    => '/usr/bin',
-    creates => $site,
+    creates => "${normalized_location}${site}",
   }
 
 }
