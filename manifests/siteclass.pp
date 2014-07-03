@@ -106,7 +106,7 @@ class reviewboard::siteclass (
 ) {
 
   # wrap the define
-  reviewboard::siteclass { $site:
+  reviewboard::site { $site:
     vhost      => $vhost,
     location   => $location,
     dbtype     => $dbtype,
