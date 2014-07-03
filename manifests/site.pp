@@ -43,6 +43,10 @@ define reviewboard::site (
     fail('Admin password not set')
   }
 
+  if $location != '/' and $reviewboard::webprovider == 'puppetlabs/apache' {
+    fail('Due to a bug in puppet allowing only hashes keyed by string literals (not variables), the puppetlabs/apache web provider only works when location is /')
+  }
+
   # Create the database
   reviewboard::provider::db {$site:
     dbuser => $dbuser,
