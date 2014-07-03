@@ -1,6 +1,8 @@
+spec/fixtures
 .bundle
 .vagrant
 .librarian
+.rspec_system
 .tmp
 Puppetfile.lock
 Gemfile.lock
