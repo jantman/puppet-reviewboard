@@ -37,10 +37,10 @@ define reviewboard::site (
   include reviewboard
 
   if $dbpass == undef {
-    err('Postgres DB password not set')
+    fail('Postgres DB password not set')
   }
   if $adminpass == undef {
-    err('Admin password not set')
+    fail('Admin password not set')
   }
 
   # Create the database
