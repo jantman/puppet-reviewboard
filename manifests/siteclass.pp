@@ -120,6 +120,6 @@ class reviewboard::siteclass (
     cache      => $cache,
     cacheinfo  => $cacheinfo,
     webuser    => $webuser,
-  )
+  }
 
 }
