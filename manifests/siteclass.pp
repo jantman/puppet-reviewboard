@@ -6,8 +6,8 @@
 #
 # === Parameters
 #
-# [*site*]
-#   (string) The name of the site.
+# [*site_path*]
+#   (string) The absolute path to where reviewboard will be installed on disk.
 #   Default: undef
 #
 # [*vhost*]
@@ -89,7 +89,7 @@
 #  limitations under the License.
 #
 class reviewboard::siteclass (
-  $site       = undef,
+  $site_path  = undef,
   $vhost      = $::fqdn,
   $location   = '/reviewboard',
   $dbtype     = 'postgresql',
@@ -105,8 +105,10 @@ class reviewboard::siteclass (
   $webuser    = $reviewboard::webuser,
 ) {
 
+  validate_absolute_path($site_path)
+
   # wrap the define
-  reviewboard::site { $site:
+  reviewboard::site { $site_path:
     vhost      => $vhost,
     location   => $location,
     dbtype     => $dbtype,
