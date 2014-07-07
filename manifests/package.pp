@@ -1,6 +1,33 @@
-## \file    manifests/package.pp
-#  \author  Scott Wales <scott.wales@unimelb.edu.au>
-#  \brief
+# = Class reviewboard::package
+#
+# Install Reviewboard
+#
+# == Parameters
+#
+# [*version*]
+#   (string) the version of ReviewBoard to install
+#   (default: 2.0.2)
+#
+# [*venv_path*]
+#   (string, absolute path) the path to the virtulenv to create and
+#   use for ReviewBoard
+#
+# [*venv_python*]
+#   (string, absolute path) the absolute path to the python interpreter
+#   to use for the reviewboard venv
+#   (default: '/usr/bin/python')
+#
+# [*base_venv*]
+#   (string, absolute path) the path to create an empty base virtualenv in,
+#   to use for the reviewboard venv per the mod_wsgi docs.
+#   (default: '/opt/empty_base_venv')
+#
+# == Authors
+#
+# Scott Wales <scott.wales@unimelb.edu.au>
+# Jason Antman <jason@jasonantman.com>
+#
+# == License
 #
 #  Copyright 2014 Scott Wales
 #
@@ -15,31 +42,43 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
+#
 class reviewboard::package (
-  $version = undef,
+  $version     = undef,
+  $venv_path   = '/opt/reviewboard',
+  $venv_python = '/usr/bin/python'
+  $base_venv   = '/opt/empty_base_venv',
 ) {
 
-  $base_url = 'http://downloads.reviewboard.org/releases/ReviewBoard'
-  case $version {
-    /^2\.0\./: { $egg_url = "${base_url}/2.0/ReviewBoard-${version}-py2.6.egg" }
-    /^1\.7\./: { $egg_url = "${base_url}/1.7/ReviewBoard-${version}-py2.6.egg" }
-    default: {
-      fail("reviewboard::package has not been tested with Review Board ${version}.")
-    }
+  validate_absolute_path($venv_path)
+  validate_absolute_path($venv_python)
+  validate_absolute_path($base_venv)
+
+  # empty base venv, per http://code.google.com/p/modwsgi/wiki/VirtualEnvironments
+  # this will be the WSGIPythonHome setting
+  python_virtualenv {$base_venv:
+    ensure     => present,
+    virtualenv => $::virtualenv27_path,
   }
 
-  if ! defined(Package['python-pip']) {
-    package {'python-pip':
-      ensure => present,
-    }
+  python_virtualenv {$venv_path:
+    ensure     => present,
+    virtualenv => $::virtualenv27_path,
   }
 
-  exec {'easy_install reviewboard':
-    command => "easy_install '${egg_url}'",
-    unless  => "pip freeze | grep 'ReviewBoard==${version}'",
-    path    => ['/bin','/usr/bin' ],
-    require => Package['python-pip'],
+  if $version == undef {
+    $req = 'ReviewBoard'
+  } else {
+    $req = "ReviewBoard==${version}"
+  }
+
+  python_package {"${venv_path},${req}":
+    ensure            => present,
+    python_prefix     => $venv_path,
+    requirement   => $req,
+    require       => [Python_virtualenv[$venv_path],
+                      Python_virtualenv[$base_venv],
+                      ],
   }
 
 }

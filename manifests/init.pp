@@ -1,7 +1,51 @@
-## \file    manifests/init.pp
-#  \author  Scott Wales <scott.wales@unimelb.edu.au>
-#  \brief
+# = Class reviewboard
 #
+# Install and generic configs for Reviewboard
+#
+# == Parameters
+#
+# [*version*]
+#   (string) the version of ReviewBoard to install
+#   (default: 2.0.2)
+#
+# [*webprovider*]
+#   (string) the provider to use for web server configuration
+#   see reviewboard::provider::web
+#   (default: 'puppetlabs/apache')
+#
+# [*webuser*]
+#   (string) the username for web resources to be owned by
+#   (default: undef - from web provider)
+#
+# [*dbprovider*]
+#   (string) the provider to use for DB configuration
+#   see reviewboard::provider::db
+#   (default: 'puppetlabs/postgresql')
+#
+# [*dbtype*]
+#   (string) the database type to use (passed in to Django)
+#   (default: 'postgresql')
+#
+# [*venv_path*]
+#   (string, absolute path) the path to the virtulenv to create and
+#   use for ReviewBoard
+#
+# [*venv_python*]
+#   (string, absolute path) the absolute path to the python interpreter
+#   to use for the reviewboard venv
+#   (default: '/usr/bin/python')
+#
+# [*base_venv*]
+#   (string, absolute path) the path to create an empty base virtualenv in,
+#   to use for the reviewboard venv per the mod_wsgi docs.
+#   (default: '/opt/empty_base_venv')
+#
+# == Authors
+#
+# Scott Wales <scott.wales@unimelb.edu.au>
+# Jason Antman <jason@jasonantman.com>
+#
+# == License
 #  Copyright 2014 Scott Wales
 #
 #  Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,26 +59,27 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-
-# Install and generic configs for Reviewboard
-
-# webprovider: Package to use to configure the web server, or 'none' for no
-#              config
-# webuser:     User that should own the web folders
-# dbprovider:  Package to use to configure the database, or 'none' for no
-#              config
-# dbtype:      Type of database to use
-
+#
 class reviewboard (
-  $version     = '1.7.24', # Current stable release
+  $version     = '2.0.2',
   $webprovider = 'puppetlabs/apache',
   $webuser     = undef,
   $dbprovider  = 'puppetlabs/postgresql',
-  $dbtype      = 'postgresql'
+  $dbtype      = 'postgresql',
+  $venv_path   = '/opt/reviewboard',
+  $venv_python = '/usr/bin/python'
+  $base_venv   = '/opt/empty_base_venv',
 ) {
 
+  validate_absolute_path($venv_path)
+  validate_absolute_path($venv_python)
+  validate_absolute_path($base_venv)
+
   class { 'reviewboard::package':
-    version => $version,
+    version     => $version,
+    venv_path   => $venv_path,
+    venv_python => $venv_python,
+    base_venv   => $base_venv,
   }
 
 }
