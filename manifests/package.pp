@@ -46,7 +46,7 @@
 class reviewboard::package (
   $version     = undef,
   $venv_path   = '/opt/reviewboard',
-  $venv_python = '/usr/bin/python'
+  $venv_python = '/usr/bin/python',
   $base_venv   = '/opt/empty_base_venv',
 ) {
 
@@ -75,10 +75,10 @@ class reviewboard::package (
   python_package {"${venv_path},${req}":
     ensure            => present,
     python_prefix     => $venv_path,
-    requirement   => $req,
-    require       => [Python_virtualenv[$venv_path],
-                      Python_virtualenv[$base_venv],
-                      ],
+    requirements      => $req,
+    require           => [Python_virtualenv[$venv_path],
+                          Python_virtualenv[$base_venv],
+                          ],
   }
 
 }

@@ -1,5 +1,7 @@
 require 'spec_helper'
 
+default_version = '2.0.2'
+
 describe 'reviewboard' do
 
   let :pre_condition do
@@ -16,7 +18,13 @@ describe 'reviewboard' do
 
         it { should compile.with_all_deps }
 
-        it { should contain_class('reviewboard::package').with_version('1.7.24') }
+        it { should contain_class('reviewboard::package').with({
+                                                                 :version     => default_version,
+                                                                 :venv_path   => '/opt/reviewboard',
+                                                                 :venv_python => '/usr/bin/python',
+                                                                 :base_venv   => '/opt/empty_base_venv'
+                                                               })
+        }
       end
     end
   end

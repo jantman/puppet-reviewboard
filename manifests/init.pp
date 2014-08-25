@@ -67,7 +67,7 @@ class reviewboard (
   $dbprovider  = 'puppetlabs/postgresql',
   $dbtype      = 'postgresql',
   $venv_path   = '/opt/reviewboard',
-  $venv_python = '/usr/bin/python'
+  $venv_python = '/usr/bin/python',
   $base_venv   = '/opt/empty_base_venv',
 ) {
 

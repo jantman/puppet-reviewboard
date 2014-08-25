@@ -21,7 +21,7 @@
 define reviewboard::site (
   $site       = $name,
   $vhost      = $::fqdn,
-  $location   = '/reviewboard',
+  $location   = '/',
   $dbtype     = 'postgresql',
   $dbname     = 'reviewboard',
   $dbhost     = 'localhost',
@@ -41,6 +41,9 @@ define reviewboard::site (
   }
   if $adminpass == undef {
     fail('Admin password not set')
+  }
+  if $adminemail == "@${::fqdn}" {
+    fail('webuser must be explicitly set if adminemail is not.')
   }
 
   if $location != '/' and $reviewboard::webprovider == 'puppetlabs/apache' {
