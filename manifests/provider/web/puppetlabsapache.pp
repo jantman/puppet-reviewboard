@@ -34,7 +34,7 @@ define reviewboard::provider::web::puppetlabsapache (
     $locationfragment = $location
   }
 
-  $script_aliases = {'/' => "${site}/htdocs/reviewboard.wsgi${locationfragment}",}
+  $script_aliases  = {"${location}" => "${site}/htdocs/reviewboard.wsgi${locationfragment}"}
 
   $directories = [
     {path   => "${site}/htdocs",
