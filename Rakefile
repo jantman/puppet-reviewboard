@@ -10,6 +10,8 @@ rescue LoadError
 end
 
 PuppetLint.configuration.send("disable_80chars")
+# autoloader layout breaks if the git repo/clone name != module name
+PuppetLint.configuration.send("disable_autoloader_layout")
 PuppetLint.configuration.log_format = "%{path}:%{linenumber}:%{check}:%{KIND}:%{message}"
 PuppetLint.configuration.fail_on_warnings = true
 
