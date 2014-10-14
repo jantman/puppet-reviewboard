@@ -6,3 +6,9 @@ RSpec.configure do |c|
     Puppet.features.stubs(:root? => true)
   end
 end
+
+class Undef
+  def inspect
+    'undef'
+  end
+end
