@@ -34,7 +34,9 @@ define reviewboard::provider::web::puppetlabsapache (
     $locationfragment = $location
   }
 
+  # lint:ignore:only_variable_string - this is a hack to make a var work as a hash key
   $script_aliases  = {"${location}" => "${site}/htdocs/reviewboard.wsgi${locationfragment}"}
+  # lint:endignore
 
   $directories = [
     {path   => "${site}/htdocs",

@@ -27,8 +27,8 @@ define reviewboard::provider::web (
 
   if $reviewboard::webprovider == 'simple' {
     reviewboard::provider::web::simple {$site:
-      vhost       => $vhost,
-      location    => $location,
+      vhost    => $vhost,
+      location => $location,
     }
 
     $realwebuser = 'apache'
@@ -37,8 +37,8 @@ define reviewboard::provider::web (
   } elsif $reviewboard::webprovider == 'puppetlabs/apache' {
     include apache
     reviewboard::provider::web::puppetlabsapache {$site:
-      vhost       => $vhost,
-      location    => $location,
+      vhost    => $vhost,
+      location => $location,
     }
 
     $realwebuser = $apache::user

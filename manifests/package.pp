@@ -73,12 +73,12 @@ class reviewboard::package (
   }
 
   python_package {"${venv_path},${req}":
-    ensure            => present,
-    python_prefix     => $venv_path,
-    requirements      => $req,
-    require           => [Python_virtualenv[$venv_path],
-                          Python_virtualenv[$base_venv],
-                          ],
+    ensure        => present,
+    python_prefix => $venv_path,
+    requirements  => $req,
+    require       => [Python_virtualenv[$venv_path],
+                      Python_virtualenv[$base_venv],
+                      ],
   }
 
 }

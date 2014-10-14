@@ -37,9 +37,9 @@ define reviewboard::provider::db::puppetlabsmysql (
   }
 
   ::mysql::db { $dbname:
-    user      => $dbuser,
-    password  => $dbpass,
-    host      => $dbhost,
+    user     => $dbuser,
+    password => $dbpass,
+    host     => $dbhost,
   }
 
 }
