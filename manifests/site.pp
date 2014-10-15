@@ -17,7 +17,70 @@
 #  limitations under the License.
 
 # Set up a reviewboard site
-
+#
+# === Parameters
+#
+# [*site (namevar)*]
+#   (string) The location where the site will be created on disk
+#   Default: $name
+#
+# [*vhost*]
+#   (string) The ServerName of the apache vhost.
+#   Default: $::fqdn
+#
+# [*location*]
+#   (string) The URL path where the site will be served
+#   Default: '/'
+#
+# [*dbtype*]
+#   (string) The database type to use. Passed directly to ``rb-site install``
+#    as the ``--db-type`` option. Default: 'postgresql'
+#
+# [*dbname*]
+#   (string) The name of the database to use. Using the default puppetlabs/postgresql
+#   dbprovider (argument to reviewboard class), this will be created automatically.
+#   Default: 'reviewboard'
+#
+# [*dbhost*]
+#   (string) The database host/IP to connect to.
+#   Default: localhost
+#
+# [*dbuser*]
+#   (string) The database user to connect as. Using the default puppetlabs/postgresql
+#   dbprovider (argument to reviewboard class), this will be created automatically.
+#   Default: reviewboard
+#
+# [*dbpass*]
+#   (string) The database password to use. This MUST be defined.
+#   Default: undef
+#
+# [*admin*]
+#   (string) The site administrator's username (admin superuser).
+#   Default: 'admin'
+#
+# [*adminpass*]
+#   (string) The site administrator's password.
+#   Default: undef
+#
+# [*adminemail*]
+#   (string) The site administrator's email address.
+#   Default: "${reviewboard::webuser}@${::fqdn}"
+#
+# [*cache*]
+#   (string) The cache server type ('memcached' or 'file').
+#   Default: 'memcached'
+#
+# [*cacheinfo*]
+#   The cache identifier (memcached connection string
+#   or file cache directory).
+#   Default: 'localhost:11211'
+#
+# [*webuser*]
+#   The (system) user that will own the site's configuration files
+#   and web root / htdocs.
+#   Default: $reviewboard::webuser
+#
+#
 define reviewboard::site (
   $site       = $name,
   $vhost      = $::fqdn,
@@ -36,6 +99,8 @@ define reviewboard::site (
 ) {
   include reviewboard
 
+  validate_absolute_path($site)
+  
   if $dbpass == undef {
     fail('Postgres DB password not set')
   }

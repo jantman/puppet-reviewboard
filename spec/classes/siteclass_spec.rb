@@ -10,17 +10,17 @@ describe 'reviewboard::siteclass' do
     ['RedHat'].each do |osfamily|
       describe "with only required parameters on #{osfamily}" do
         let(:params) {{
-            :site_path   => '/',
             :dbpass      => 'foo',
             :adminpass   => 'bar',
             :adminemail  => 'foo@fqdn.example.com'
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
-        let(:pre_condition) { "class {'postgresql::server': }" }
+        let(:pre_condition) { ["class {'postgresql::server': }",
+                               "class {'reviewboard': }"]}
 
         it { should compile.with_all_deps }
 
-        it { should contain_reviewboard__site('/').with({
+        it { should contain_reviewboard__site('/opt/reviewboard/site').with({
                                                           :vhost      => 'fqdn.example.com',
                                                           :location   => '/',
                                                           :dbtype     => 'postgresql',
@@ -41,11 +41,9 @@ describe 'reviewboard::siteclass' do
 
       describe "with no web provider on #{osfamily}" do
         let(:params) {{
-            :site_path   => '/',
             :dbpass      => 'foo',
             :adminpass   => 'bar',
             :adminemail  => 'email@fqdn.example.com',
-            :location    => '/reviewboard'
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
         let(:pre_condition) { ["class {'postgresql::server': }",
@@ -53,9 +51,9 @@ describe 'reviewboard::siteclass' do
 
         it { should compile.with_all_deps }
 
-        it { should contain_reviewboard__site('/').with({
+        it { should contain_reviewboard__site('/opt/reviewboard/site').with({
                                                           :vhost      => 'fqdn.example.com',
-                                                          :location   => '/reviewboard',
+                                                          :location   => '/',
                                                           :dbtype     => 'postgresql',
                                                           :dbname     => 'reviewboard',
                                                           :dbhost     => 'localhost',
@@ -72,38 +70,20 @@ describe 'reviewboard::siteclass' do
 
       end
 
-      describe "with non-absolute-path site_path on #{osfamily}" do
-        let(:params) {{
-            :site_path   => 'foo',
-            :dbpass      => 'foo',
-            :adminpass   => 'bar',
-            :adminemail  => 'email@fqdn.example.com',
-            :location    => '/'
-        }}
-        let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
-
-        it do
-          expect {
-            should contain_class('reviewboard::siteclass')
-          }.to raise_error(Puppet::Error, /"foo" is not an absolute path/)
-        end
-
-      end
-
       describe "with specified vhost on #{osfamily}" do
         let(:params) {{
-            :site_path   => '/',
             :dbpass      => 'foo',
             :adminpass   => 'bar',
             :adminemail  => 'email@fqdn.example.com',
             :vhost       => 'reviewboard'
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
-        let(:pre_condition) { "class {'postgresql::server': }" }
+        let(:pre_condition) { ["class {'postgresql::server': }",
+                               "class {'reviewboard': }"]}
 
         it { should compile.with_all_deps }
 
-        it { should contain_reviewboard__site('/').with({
+        it { should contain_reviewboard__site('/opt/reviewboard/site').with({
                                                           :vhost      => 'reviewboard',
                                                         })
         }

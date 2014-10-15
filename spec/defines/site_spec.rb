@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'reviewboard::site', :type => :define do
-  let(:title) { 'sitename' }
+  let(:title) { '/opt/reviewboard/site' }
 
   let :pre_condition do
     "package {'python-pip': ensure => present, }"
@@ -19,7 +19,7 @@ describe 'reviewboard::site', :type => :define do
 
         it { should create_class('reviewboard') } # include
 
-        it { should contain_reviewboard__provider__db('sitename').with({
+        it { should contain_reviewboard__provider__db('/opt/reviewboard/site').with({
                                                                          :dbuser => 'reviewboard',
                                                                          :dbpass => 'foo',
                                                                          :dbname => 'reviewboard',
@@ -27,7 +27,7 @@ describe 'reviewboard::site', :type => :define do
                                                                          })
         }
 
-        it { should contain_reviewboard__site__install('sitename').with({
+        it { should contain_reviewboard__site__install('/opt/reviewboard/site').with({
                                                                           :vhost      => 'fqdn.example.com',
                                                                           :location   => '/',
                                                                           :dbtype     => 'postgresql',
@@ -40,15 +40,15 @@ describe 'reviewboard::site', :type => :define do
                                                                           :adminemail => 'email@fqdn.example.com',
                                                                           :cache      => 'memcached',
                                                                           :cacheinfo  => 'localhost:11211',
-                                                                          :require    => 'Reviewboard::Provider::Db[sitename]',
+                                                                          :require    => 'Reviewboard::Provider::Db[/opt/reviewboard/site]',
                                                                           })
         }
 
-        it { should contain_reviewboard__provider__web('sitename').with({
+        it { should contain_reviewboard__provider__web('/opt/reviewboard/site').with({
                                                                           :vhost    => 'fqdn.example.com',
                                                                           :location => '/',
                                                                           :webuser  => nil,
-                                                                          :require  => 'Reviewboard::Site::Install[sitename]',
+                                                                          :require  => 'Reviewboard::Site::Install[/opt/reviewboard/site]',
                                                                           })
         }
 
@@ -63,11 +63,11 @@ describe 'reviewboard::site', :type => :define do
 
         it { should create_class('reviewboard') } # include
 
-        it { should contain_reviewboard__provider__web('sitename').with({
+        it { should contain_reviewboard__provider__web('/opt/reviewboard/site').with({
                                                                           :vhost    => 'fqdn.example.com',
                                                                           :location => '/',
                                                                           :webuser  => 'apache',
-                                                                          :require  => 'Reviewboard::Site::Install[sitename]',
+                                                                          :require  => 'Reviewboard::Site::Install[/opt/reviewboard/site]',
                                                                           })
         }
 
@@ -85,7 +85,7 @@ describe 'reviewboard::site', :type => :define do
 
       it do
         expect {
-          should contain_reviewboard__provider__web('sitename')
+          should contain_reviewboard__provider__web('/opt/reviewboard/site')
         }.to raise_error(Puppet::Error, /Postgres DB password not set/)
       end
     end
@@ -98,7 +98,7 @@ describe 'reviewboard::site', :type => :define do
 
       it do
         expect {
-          should contain_reviewboard__provider__web('sitename')
+          should contain_reviewboard__provider__web('/opt/reviewboard/site')
         }.to raise_error(Puppet::Error, /Admin password not set/)
       end
     end
@@ -111,8 +111,22 @@ describe 'reviewboard::site', :type => :define do
 
       it do
         expect {
-          should contain_reviewboard__provider__web('sitename')
+          should contain_reviewboard__provider__web('/opt/reviewboard/site')
         }.to raise_error(Puppet::Error, /webuser must be explicitly set if adminemail is not/)
+      end
+    end
+
+    describe 'name not an absolute path' do
+      let(:title) { 'sitename' }
+      let(:params) {{
+        :dbpass    => 'foo',
+        :adminpass => 'foo'
+      }}
+
+      it do
+        expect {
+          should contain_reviewboard__provider__web('sitename')
+        }.to raise_error(Puppet::Error, /"sitename" is not an absolute path/)
       end
     end
 
@@ -126,7 +140,7 @@ describe 'reviewboard::site', :type => :define do
 
       it do
         expect {
-          should contain_reviewboard__provider__web('sitename')
+          should contain_reviewboard__provider__web('/opt/reviewboard/site')
         }.to raise_error(Puppet::Error, /Due to a bug in puppet allowing only hashes keyed by string literals/)
       end
     end
@@ -139,12 +153,12 @@ describe 'reviewboard::site', :type => :define do
       }}
       let(:pre_condition) { "class {'reviewboard': webprovider => 'none'}" }
 
-      it { should contain_reviewboard__site__install('sitename').with({
+      it { should contain_reviewboard__site__install('/opt/reviewboard/site').with({
                                                                         :location   => '/foo/',
                                                                         })
       }
 
-      it { should contain_reviewboard__provider__web('sitename').with({
+      it { should contain_reviewboard__provider__web('/opt/reviewboard/site').with({
                                                                         :location => '/foo',
                                                                         })
       }

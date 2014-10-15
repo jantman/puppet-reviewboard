@@ -6,17 +6,17 @@
 #
 # === Parameters
 #
-# [*site_path*]
-#   (string) The absolute path to where reviewboard will be installed on disk.
-#   Default: undef
+# [*sitename*]
+#   (string) The location where the site will be created on disk
+#   Default: '${reviewboard::venv_path}/site'
 #
 # [*vhost*]
 #   (string) The ServerName of the apache vhost.
 #   Default: $::fqdn
 #
 # [*location*]
-#   (string) The path to the site relative to the domain name.
-#   Default: '/reviewboard'
+#   (string) The URL path where the site will be served
+#   Default: '/'
 #
 # [*dbtype*]
 #   (string) The database type to use. Passed directly to ``rb-site install``
@@ -89,7 +89,7 @@
 #  limitations under the License.
 #
 class reviewboard::siteclass (
-  $site_path  = undef,
+  $sitename   = "${reviewboard::venv_path}/site",
   $vhost      = $::fqdn,
   $location   = '/',
   $dbtype     = 'postgresql',
@@ -104,11 +104,10 @@ class reviewboard::siteclass (
   $cacheinfo  = 'localhost:11211',
   $webuser    = $reviewboard::webuser,
 ) {
-
-  validate_absolute_path($site_path)
+  include reviewboard
 
   # wrap the define
-  reviewboard::site { $site_path:
+  reviewboard::site { $sitename:
     vhost      => $vhost,
     location   => $location,
     dbtype     => $dbtype,
