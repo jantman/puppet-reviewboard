@@ -25,8 +25,8 @@ class SpecHelperFacts
       :osfamily          => 'RedHat',
       :virtualenv27_path => '/usr/bin/virtualenv-2.7',
       :python27_path     => '/usr/bin/python2.7',
-      :concat_basedir => '/var/lib/puppet/concat',
-      :fqdn           => 'fqdn.example.com'
+      :concat_basedir    => '/var/lib/puppet/concat',
+      :fqdn              => 'fqdn.example.com'
     }
     # override or append specified values
     hash.each do |k, v|
