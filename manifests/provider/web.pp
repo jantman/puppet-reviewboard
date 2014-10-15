@@ -54,7 +54,7 @@ define reviewboard::provider::web (
     $webservice  = undef
 
   } else {
-    err("Web provider '${reviewboard::webprovider}' not defined")
+    fail("Web provider '${reviewboard::webprovider}' not defined")
   }
 
   # Set web folder ownership

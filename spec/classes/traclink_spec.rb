@@ -6,6 +6,7 @@ describe 'reviewboard::traclink' do
     <<-eos
     package {'python-pip': ensure => present, }
     package {'trac': ensure => present, }
+    class {'reviewboard': }
     eos
   end
 
@@ -28,7 +29,8 @@ describe 'reviewboard::traclink' do
       end
       describe "notify web provider" do
         let(:params) {{ }}
-        let(:pre_condition) { [ "reviewboard::provider::web {'/foo': vhost => 'foo', location => '/', webuser => 'bar'}",
+        let(:pre_condition) { [ "class {'reviewboard': }",
+                                "reviewboard::provider::web {'/foo': vhost => 'foo', location => '/', webuser => 'bar'}",
                                 "package {'trac': }"] }
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
