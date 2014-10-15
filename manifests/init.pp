@@ -6,7 +6,7 @@
 #
 # [*version*]
 #   (string) the version of ReviewBoard to install
-#   (default: 2.0.2)
+#   (default: undef; install latest)
 #
 # [*webprovider*]
 #   (string) the provider to use for web server configuration
@@ -33,7 +33,11 @@
 # [*venv_python*]
 #   (string, absolute path) the absolute path to the python interpreter
 #   to use for the reviewboard venv
-#   (default: '/usr/bin/python')
+#   (default: $::python27_path)
+#
+# [*virtualenv_script*]
+#   (string, absolute path) The path to the virtualenv script to use.
+#   (default: $::virtualenv27_path)
 #
 # [*base_venv*]
 #   (string, absolute path) the path to create an empty base virtualenv in,
@@ -61,25 +65,28 @@
 #  limitations under the License.
 #
 class reviewboard (
-  $version     = '2.0.2',
-  $webprovider = 'puppetlabs/apache',
-  $webuser     = undef,
-  $dbprovider  = 'puppetlabs/postgresql',
-  $dbtype      = 'postgresql',
-  $venv_path   = '/opt/reviewboard',
-  $venv_python = '/usr/bin/python',
-  $base_venv   = '/opt/empty_base_venv',
+  $version           = undef,
+  $webprovider       = 'puppetlabs/apache',
+  $webuser           = undef,
+  $dbprovider        = 'puppetlabs/postgresql',
+  $dbtype            = 'postgresql',
+  $venv_path         = '/opt/reviewboard',
+  $venv_python       = $::python27_path,
+  $virtualenv_script = $::virtualenv27_path,
+  $base_venv         = '/opt/empty_base_venv',
 ) {
 
   validate_absolute_path($venv_path)
+  validate_absolute_path($virtualenv_script)
   validate_absolute_path($venv_python)
   validate_absolute_path($base_venv)
 
   class { 'reviewboard::package':
-    version     => $version,
-    venv_path   => $venv_path,
-    venv_python => $venv_python,
-    base_venv   => $base_venv,
+    version           => $version,
+    venv_path         => $venv_path,
+    venv_python       => $venv_python,
+    virtualenv_script => $virtualenv_script,
+    base_venv         => $base_venv,
   }
 
 }
