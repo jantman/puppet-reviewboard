@@ -6,7 +6,11 @@
 #
 # [*version*]
 #   (string) the version of ReviewBoard to install
-#   (default: 2.0.2)
+#   (default: undef; install latest)
+#
+# [*virtualenv_script*]
+#   (string, absolute path) The path to the virtualenv script to use.
+#   (default: $::virtualenv27_path)
 #
 # [*venv_path*]
 #   (string, absolute path) the path to the virtulenv to create and
@@ -15,7 +19,7 @@
 # [*venv_python*]
 #   (string, absolute path) the absolute path to the python interpreter
 #   to use for the reviewboard venv
-#   (default: '/usr/bin/python')
+#   (default: $::python27_path)
 #
 # [*base_venv*]
 #   (string, absolute path) the path to create an empty base virtualenv in,
@@ -44,12 +48,14 @@
 #  limitations under the License.
 #
 class reviewboard::package (
-  $version     = undef,
-  $venv_path   = '/opt/reviewboard',
-  $venv_python = '/usr/bin/python',
-  $base_venv   = '/opt/empty_base_venv',
+  $version           = undef,
+  $virtualenv_script = $::virtualenv27_path,
+  $venv_path         = '/opt/reviewboard',
+  $venv_python       = $::python27_path,
+  $base_venv         = '/opt/empty_base_venv',
 ) {
 
+  validate_absolute_path($virtualenv_script)
   validate_absolute_path($venv_path)
   validate_absolute_path($venv_python)
   validate_absolute_path($base_venv)
@@ -58,12 +64,14 @@ class reviewboard::package (
   # this will be the WSGIPythonHome setting
   python_virtualenv {$base_venv:
     ensure     => present,
-    virtualenv => $::virtualenv27_path,
+    virtualenv => $virtualenv_script,
+    python     => $venv_python,
   }
 
   python_virtualenv {$venv_path:
     ensure     => present,
-    virtualenv => $::virtualenv27_path,
+    virtualenv => $virtualenv_script,
+    python     => $venv_python,
   }
 
   if $version == undef {
