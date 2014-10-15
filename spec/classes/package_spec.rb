@@ -10,25 +10,24 @@ describe 'reviewboard::package' do
 
   context 'supported operating systems' do
     ['RedHat'].each do |osfamily|
-      describe "reviewboard::package class without any parameters on #{osfamily}" do
+      describe "class without any parameters on #{osfamily}" do
         let(:params) {{ }}
         
-        let(:facts) {{
-            :osfamily          => 'RedHat',
-            :virtualenv27_path => '/usr/bin/virtualenv-2.7'
-          }}
+        let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
         it { should compile.with_all_deps }
 
         it { should contain_python_virtualenv('/opt/empty_base_venv').with({
                                                                              :ensure     => 'present',
-                                                                             :virtualenv => '/usr/bin/virtualenv-2.7'
+                                                                             :virtualenv => '/usr/bin/virtualenv-2.7',
+                                                                             :python     => '/usr/bin/python2.7'
                                                                            })
         }
 
         it { should contain_python_virtualenv('/opt/reviewboard').with({
                                                                          :ensure     => 'present',
-                                                                         :virtualenv => '/usr/bin/virtualenv-2.7'
+                                                                         :virtualenv => '/usr/bin/virtualenv-2.7',
+                                                                         :python     => '/usr/bin/python2.7'
                                                                        })
         }
 
@@ -37,6 +36,113 @@ describe 'reviewboard::package' do
                                                                                   :python_prefix => '/opt/reviewboard',
                                                                                   :requirements  => 'ReviewBoard',
                                                                                   :require       => ['Python_virtualenv[/opt/reviewboard]', 'Python_virtualenv[/opt/empty_base_venv]']
+                                                                                })
+        }
+      end
+
+      describe "class with specified version on #{osfamily}" do
+        let(:params) {{ :version => '1.2.3'}}
+        
+        let(:facts) {{
+            :osfamily          => 'RedHat',
+            :virtualenv27_path => '/usr/bin/virtualenv-2.7',
+            :python27_path     => '/usr/bin/python2.7'
+          }}
+
+        it { should compile.with_all_deps }
+
+        it { should contain_python_package('/opt/reviewboard,ReviewBoard==1.2.3').with({
+                                                                                  :ensure        => 'present',
+                                                                                  :python_prefix => '/opt/reviewboard',
+                                                                                  :requirements  => 'ReviewBoard==1.2.3',
+                                                                                  :require       => ['Python_virtualenv[/opt/reviewboard]', 'Python_virtualenv[/opt/empty_base_venv]']
+                                                                                })
+        }
+      end
+
+      describe "class with specified virtualenv_script and python on #{osfamily}" do
+        let(:params) {{
+            :virtualenv_script => '/foo/bar/virtualenv',
+            :venv_python       => '/foo/bar/python'
+        }}
+        
+        let(:facts) {{
+            :osfamily          => 'RedHat',
+            :virtualenv27_path => '/usr/bin/virtualenv-2.7',
+            :python27_path     => '/usr/bin/python2.7'
+          }}
+
+        it { should compile.with_all_deps }
+
+        it { should contain_python_virtualenv('/opt/empty_base_venv').with({
+                                                                             :ensure     => 'present',
+                                                                             :virtualenv => '/foo/bar/virtualenv',
+                                                                             :python     => '/foo/bar/python'
+                                                                           })
+        }
+
+        it { should contain_python_virtualenv('/opt/reviewboard').with({
+                                                                         :ensure     => 'present',
+                                                                         :virtualenv => '/foo/bar/virtualenv',
+                                                                         :python     => '/foo/bar/python'
+                                                                       })
+        }
+      end
+
+      describe "class with specified venv_path on #{osfamily}" do
+        let(:params) {{
+            :venv_path => '/foo/bar'
+        }}
+        
+        let(:facts) {{
+            :osfamily          => 'RedHat',
+            :virtualenv27_path => '/usr/bin/virtualenv-2.7',
+            :python27_path     => '/usr/bin/python2.7'
+          }}
+
+        it { should compile.with_all_deps }
+
+        it { should contain_python_virtualenv('/foo/bar').with({
+                                                                         :ensure     => 'present',
+                                                                         :virtualenv => '/usr/bin/virtualenv-2.7',
+                                                                         :python     => '/usr/bin/python2.7'
+                                                                       })
+        }
+
+        it { should contain_python_package('/foo/bar,ReviewBoard').with({
+                                                                                  :ensure        => 'present',
+                                                                                  :python_prefix => '/foo/bar',
+                                                                                  :requirements  => 'ReviewBoard',
+                                                                                  :require       => ['Python_virtualenv[/foo/bar]', 'Python_virtualenv[/opt/empty_base_venv]']
+                                                                                })
+        }
+      end
+
+      describe "class with specified base_venv on #{osfamily}" do
+        let(:params) {{
+            :base_venv => '/foo/bar'
+        }}
+        
+        let(:facts) {{
+            :osfamily          => 'RedHat',
+            :virtualenv27_path => '/usr/bin/virtualenv-2.7',
+            :python27_path     => '/usr/bin/python2.7'
+          }}
+
+        it { should compile.with_all_deps }
+
+        it { should contain_python_virtualenv('/foo/bar').with({
+                                                                             :ensure     => 'present',
+                                                                             :virtualenv => '/usr/bin/virtualenv-2.7',
+                                                                             :python     => '/usr/bin/python2.7'
+                                                                           })
+        }
+
+        it { should contain_python_package('/opt/reviewboard,ReviewBoard').with({
+                                                                                  :ensure        => 'present',
+                                                                                  :python_prefix => '/opt/reviewboard',
+                                                                                  :requirements  => 'ReviewBoard',
+                                                                                  :require       => ['Python_virtualenv[/opt/reviewboard]', 'Python_virtualenv[/foo/bar]']
                                                                                 })
         }
       end
