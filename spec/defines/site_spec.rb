@@ -15,14 +15,7 @@ describe 'reviewboard::site', :type => :define do
             :adminpass  => 'bar',
             :adminemail => 'email@fqdn.example.com'
         }}
-        let(:facts) {{
-          :osfamily => osfamily,
-          :operatingsystem => 'CentOS',
-          :operatingsystemmajrelease => '6',
-          :operatingsystemrelease => '6.5',
-          :concat_basedir => '/var/lib/puppet/concat',
-          :fqdn           => 'fqdn.example.com'
-        }}
+	let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
         it { should contain_reviewboard__provider__db('sitename').with({
                                                                          :dbuser => 'reviewboard',
@@ -62,14 +55,7 @@ describe 'reviewboard::site', :type => :define do
   end
 
   context 'input validation' do
-    let(:facts) {{
-      :osfamily => 'RedHat',
-      :operatingsystem => 'CentOS',
-      :operatingsystemmajrelease => '6',
-      :operatingsystemrelease => '6.5',
-      :concat_basedir => '/var/lib/puppet/concat',
-      :fqdn           => 'fqdn.example.com'
-    }}
+    let(:facts) { SpecHelperFacts.new().facts }
 
     describe 'dbpass undefined should fail' do
       let(:params) {{

@@ -10,9 +10,7 @@ describe 'reviewboard::rbtool' do
     ['RedHat'].each do |osfamily|
       describe "reviewboard::rbtool class without any parameters on #{osfamily}" do
         let(:params) {{ }}
-        let(:facts) {{
-          :osfamily => osfamily,
-        }}
+        let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
         it { should compile.with_all_deps }
 

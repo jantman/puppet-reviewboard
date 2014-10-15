@@ -16,14 +16,7 @@ describe 'reviewboard::siteclass' do
             :adminemail  => 'email@fqdn.example.com',
             :location    => '/'
         }}
-        let(:facts) {{
-          :osfamily => osfamily,
-          :operatingsystem => 'CentOS',
-          :operatingsystemmajrelease => '6',
-          :operatingsystemrelease => '6.5',
-          :concat_basedir => '/var/lib/puppet/concat',
-          :fqdn           => 'fqdn.example.com'
-        }}
+        let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
         it { should contain_reviewboard__site('/').with({
                                                           :vhost      => 'fqdn.example.com',

@@ -43,11 +43,7 @@ describe 'reviewboard::package' do
       describe "class with specified version on #{osfamily}" do
         let(:params) {{ :version => '1.2.3'}}
         
-        let(:facts) {{
-            :osfamily          => 'RedHat',
-            :virtualenv27_path => '/usr/bin/virtualenv-2.7',
-            :python27_path     => '/usr/bin/python2.7'
-          }}
+        let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
         it { should compile.with_all_deps }
 
@@ -66,11 +62,7 @@ describe 'reviewboard::package' do
             :venv_python       => '/foo/bar/python'
         }}
         
-        let(:facts) {{
-            :osfamily          => 'RedHat',
-            :virtualenv27_path => '/usr/bin/virtualenv-2.7',
-            :python27_path     => '/usr/bin/python2.7'
-          }}
+        let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
         it { should compile.with_all_deps }
 
@@ -94,11 +86,7 @@ describe 'reviewboard::package' do
             :venv_path => '/foo/bar'
         }}
         
-        let(:facts) {{
-            :osfamily          => 'RedHat',
-            :virtualenv27_path => '/usr/bin/virtualenv-2.7',
-            :python27_path     => '/usr/bin/python2.7'
-          }}
+        let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
         it { should compile.with_all_deps }
 
@@ -123,11 +111,7 @@ describe 'reviewboard::package' do
             :base_venv => '/foo/bar'
         }}
         
-        let(:facts) {{
-            :osfamily          => 'RedHat',
-            :virtualenv27_path => '/usr/bin/virtualenv-2.7',
-            :python27_path     => '/usr/bin/python2.7'
-          }}
+        let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
         it { should compile.with_all_deps }
 

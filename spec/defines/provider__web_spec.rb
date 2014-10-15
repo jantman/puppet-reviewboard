@@ -18,14 +18,7 @@ describe 'reviewboard::provider::web', :type => :define do
             :location => '/reviewboard',
             :webuser  => 'apache'
         }}
-        let(:facts) {{
-          :osfamily => osfamily,
-          :operatingsystem => 'CentOS',
-          :operatingsystemmajrelease => '6',
-          :operatingsystemrelease => '6.5',
-          :concat_basedir => '/var/lib/puppet/concat',
-          :fqdn           => 'fqdn.example.com'
-        }}
+        let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
         it { should compile.with_all_deps }
 
