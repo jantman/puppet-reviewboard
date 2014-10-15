@@ -91,7 +91,7 @@
 class reviewboard::siteclass (
   $site_path  = undef,
   $vhost      = $::fqdn,
-  $location   = '/reviewboard',
+  $location   = '/',
   $dbtype     = 'postgresql',
   $dbname     = 'reviewboard',
   $dbhost     = 'localhost',
