@@ -17,6 +17,8 @@ describe 'reviewboard::site', :type => :define do
         }}
 	let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
+        it { should create_class('reviewboard') } # include
+
         it { should contain_reviewboard__provider__db('sitename').with({
                                                                          :dbuser => 'reviewboard',
                                                                          :dbpass => 'foo',
@@ -46,6 +48,25 @@ describe 'reviewboard::site', :type => :define do
                                                                           :vhost    => 'fqdn.example.com',
                                                                           :location => '/',
                                                                           :webuser  => nil,
+                                                                          :require  => 'Reviewboard::Site::Install[sitename]',
+                                                                          })
+        }
+
+      end
+      describe "define with specified webuser on #{osfamily}" do
+        let(:params) {{
+            :dbpass     => 'foo',
+            :adminpass  => 'bar',
+        }}
+	let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
+        let(:pre_condition) { "class {'reviewboard': webuser => 'apache' }" }
+
+        it { should create_class('reviewboard') } # include
+
+        it { should contain_reviewboard__provider__web('sitename').with({
+                                                                          :vhost    => 'fqdn.example.com',
+                                                                          :location => '/',
+                                                                          :webuser  => 'apache',
                                                                           :require  => 'Reviewboard::Site::Install[sitename]',
                                                                           })
         }
