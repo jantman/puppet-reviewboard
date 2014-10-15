@@ -11,7 +11,7 @@ describe 'reviewboard::traclink' do
 
   context 'supported operating systems' do
     ['RedHat'].each do |osfamily|
-      describe "reviewboard::traclink class without any parameters on #{osfamily}" do
+      describe "without any parameters on #{osfamily}" do
         let(:params) {{ }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
@@ -24,6 +24,17 @@ describe 'reviewboard::traclink' do
                                                        })
         }
 
+        it { should create_class('reviewboard::package') }
+      end
+      describe "notify web provider" do
+        let(:params) {{ }}
+        let(:pre_condition) { [ "reviewboard::provider::web {'/foo': vhost => 'foo', location => '/', webuser => 'bar'}",
+                                "package {'trac': }"] }
+        let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
+
+        it { should compile.with_all_deps }
+
+        it { should contain_package('traclink').that_notifies('Reviewboard::Provider::Web[/foo]') }
       end
     end
   end
