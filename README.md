@@ -14,6 +14,9 @@ Pre-Requisites
 **Note** this branch currently relies on a module, coxmediagroup/virtualenv,
 that is not yet available to the public. We're working on fixing that.
 
+Also, note any TODO comments. Currently, I haven't written spec or acceptance
+tests for db or web providers other than the default two.
+
 The Modulefile only lists the mandatory 'stdlib' dependency. It is possible to
 configure what modules are used to provide the web server and database, it is
 neccessary to separately install these dependencies, e.g. for the default
