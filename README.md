@@ -40,6 +40,16 @@ Create a reviewboard site based at '/var/www/reviewboard', available at ${::fqdn
         location => '/reviewboard'
     }
 
+Setup LDAP Authentication for the site, authenticating against ``ldap://foo.example.com:389``
+(clear text, non-SSL) and looking for users under the base DN ``ou=people,dc=example,dc=com``
+with a user mask of ``samaccountname=%s`` (Active Directory):
+
+    reviewboard::site::ldap {'/var/www/reviewboard':
+	    uri      => 'ldap://foo.example.com:389',
+		basedn   => 'ou=people,dc=example,dc=com',
+		usermask => 'samaccountname=%s'
+	}
+
 You can change the review board version installed with the 'version' argument to the
 reviewboard class. Acceptable values for the version argument look like '1.7.20' or
 '2.0rc1'. You can find a catalog of versions at:
