@@ -62,7 +62,7 @@ define reviewboard::site::install(
     require => Class[reviewboard::package],
     command => "rb-site install ${site} ${argstr}",
     path    => '/usr/bin',
-    creates => "${normalized_location}${site}",
+    creates => "${site}",
   }
 
 }
