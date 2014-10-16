@@ -4,7 +4,7 @@ describe 'reviewboard::site::install', :type => :define do
 
   context 'supported operating systems' do
     ['RedHat'].each do |osfamily|
-      describe "on #{osfamily}" do
+      describe "with example params on #{osfamily}" do
         let(:title) { '/opt/reviewboard/site' }
         let(:params) {{
             :vhost      => 'rbvhost',
@@ -54,6 +54,19 @@ describe 'reviewboard::site::install', :type => :define do
                                                                                  :creates => '/opt/reviewboard/site',
                                                                                })
         }
+      end
+      pending "database on different host" do
+        # need to see if we handle this
+      end
+      pending "non-default venv path" do
+        # try with a non-default venv path
+      end
+      pending "creates different file" do
+        # this is really for the 'with example params test';
+        # we need something better to test for with 'creates'
+      end
+      pending "handles existing site" do
+        # if the site already exists and we're upgrading, need to do `rb-site upgrade`
       end
     end
   end
