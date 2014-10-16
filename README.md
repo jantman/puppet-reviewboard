@@ -120,11 +120,21 @@ Integration tests make use of [serverspec](http://serverspec.org) to check the m
 To setup tests
 
     $ gem install bundler
-    $ bundle install --path vendor/bundle
+    $ bundle install --path vendor
 
-then to run the tests
+To run the syntax, lint and rspec tests:
 
-    $ bundle exec rake
+    $ bundle exec rake test
+
+To run the beaker/serverspec integration tests:
+
+    $ BEAKER_destroy=no bundle exec rake acceptance
+
+To run again without re-provisioning the vm:
+
+    $ BEAKER_destroy=no BEAKER_provision=no bundle exec rake acceptance
+
+For more information on running the integration/acceptance tests, see [How to Write a Beaker Test for a Module](https://github.com/puppetlabs/beaker/wiki/How-to-Write-a-Beaker-Test-for-a-Module).
 
 Use `vagrant destroy` to stop the test VM.
 
