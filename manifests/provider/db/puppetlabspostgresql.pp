@@ -27,7 +27,7 @@ define reviewboard::provider::db::puppetlabspostgresql (
   include postgresql::lib::python
 
   if $dbhost != 'localhost' {
-    err('Remote db hosts not implemented')
+    fail('Remote db hosts not implemented')
   }
 
   postgresql::server::db {$dbname:

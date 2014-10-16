@@ -30,6 +30,8 @@ Additionally the following optional prerequisites may be installed:
  * memcached & python-memcached for website caching
  * python bindings for your database (if not installed by the dbprovider)
 
+**Note** that the database providers do not support anything other than 'localhost'.
+
 Usage
 -----
 
