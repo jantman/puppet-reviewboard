@@ -15,5 +15,6 @@ dependency 'puppetlabs/apache'
 dependency 'puppetlabs/concat'
 dependency 'puppetlabs/postgresql'
 dependency 'coxmediagroup/virtualenv', '>=0.1.0 <2.0.0'
+dependency 'coxmediagroup/python', '>=0.0.6 <1.0.0'
 # the following is optional, but there's no way to declare that
 dependency 'puppetlabs/mysql'
