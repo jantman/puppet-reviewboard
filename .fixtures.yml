@@ -4,6 +4,7 @@ fixtures:
     # note, this isn't open yet :(
     virtualenv: "git@github.com:coxmediagroup/puppet-virtualenv.git"
     python: "git@github.com:coxmediagroup/puppet-python.git"
+    yum: "git@github.com:coxmediagroup/puppet-yum.git"
     apache: "git://github.com/puppetlabs/puppetlabs-apache.git"
     concat: "git://github.com/puppetlabs/puppetlabs-concat.git"
     postgresql: "git://github.com/puppetlabs/puppetlabs-postgresql.git"

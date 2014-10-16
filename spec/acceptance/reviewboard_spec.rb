@@ -3,6 +3,12 @@ require 'spec_helper_acceptance'
 describe 'reviewboard' do
   describe "initial run with defaults" do
     it 'installs cleanly' do
+      # prerequisites
+      pp = <<-EOS.unindent
+          class {'python::python27':}
+      EOS
+      apply_manifest(pp, :catch_failures => true)
+
       pp = <<-EOS.unindent
           class {'reviewboard':}
       EOS

@@ -60,7 +60,7 @@ RSpec.configure do |c|
     puppet_module_install(:source => proj_root, :module_name => 'reviewboard')
     # workaround for recursive symlink issue
     system("bundle exec rake spec_prep")
-    ['stdlib', 'apache', 'concat', 'postgresql', 'virtualenv', 'python'].each do |m|
+    ['stdlib', 'apache', 'concat', 'postgresql', 'virtualenv', 'python', 'yum'].each do |m|
       puppet_module_install(:source => File.join(proj_root, 'spec', 'fixtures', 'modules', m), :module_name => m)
     end
     hosts.each do |host|
