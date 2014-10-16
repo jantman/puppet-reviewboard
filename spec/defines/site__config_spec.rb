@@ -33,6 +33,9 @@ describe 'reviewboard::site::config', :type => :define do
                                                                                    })
         }
       end
+      pending "handle alternate venv path" do
+        # it needs to handle a non-default venv path
+      end
     end
   end
 end
