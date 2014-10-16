@@ -33,6 +33,8 @@ desc "Run acceptance tests"
 RSpec::Core::RakeTask.new(:acceptance) do |t|
   t.pattern = 'spec/acceptance'
 end
+# for recursive symlink issue
+task :acceptance => :spec_clean
 
 desc "Run syntax, lint, and spec tests."
 task :test => [

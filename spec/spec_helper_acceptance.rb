@@ -58,6 +58,11 @@ RSpec.configure do |c|
   c.before :suite do
     # Install module and dependencies
     puppet_module_install(:source => proj_root, :module_name => 'reviewboard')
+    # workaround for recursive symlink issue
+    system("bundle exec rake spec_prep")
+    ['stdlib', 'apache', 'concat', 'postgresql', 'virtualenv'].each do |m|
+      puppet_module_install(:source => File.join(proj_root, 'spec', 'fixtures', 'modules', m), :module_name => m)
+    end
     hosts.each do |host|
       on host, shell('chmod 755 /root')
       if fact('osfamily') == 'Debian'
