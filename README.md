@@ -19,14 +19,6 @@ that is not yet available to the public. We're working on fixing that.
 Also, note any TODO comments. Currently, I haven't written spec or acceptance
 tests for db or web providers other than the default two.
 
-The Modulefile only lists the mandatory 'stdlib' dependency. It is possible to
-configure what modules are used to provide the web server and database, it is
-neccessary to separately install these dependencies, e.g. for the default
-setup:
-
-    puppet module install puppetlabs/apache
-    puppet module install puppetlabs/postgresql
-
 The modules available are listed below in the 'Usage' section, pull requests to
 support other providers are welcome.
 
@@ -35,7 +27,11 @@ Additionally the following optional prerequisites may be installed:
  * memcached & python-memcached for website caching
  * python bindings for your database (if not installed by the dbprovider)
 
-**Note** that the database providers do not support anything other than 'localhost'.
+**Note** That the database providers do not support anything other than 'localhost'.
+
+**Note** This module requires "nodejs" and "npm" packages to be available via the default
+package provider on your OS; they are installed via [puppetlabs-nodejs](https://forge.puppetlabs.com/puppetlabs/nodejs).
+On RedHat derivative systems, this generally means enabling EPEL.
 
 Usage
 -----
