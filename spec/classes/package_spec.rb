@@ -23,8 +23,6 @@ describe 'reviewboard::package' do
 
         it { should compile.with_all_deps }
 
-        it { should contain_class('nodejs') }
-
         it { should contain_python_virtualenv('/opt/empty_base_venv').with({
                                                                              :ensure     => 'present',
                                                                              :virtualenv => '/usr/bin/virtualenv-2.7',
@@ -40,11 +38,11 @@ describe 'reviewboard::package' do
                                                                        })
         }
 
-        it { should contain_package('uglifyjs').with_provider('npm').with_require('Class[Nodejs]') }
+        it { should contain_package('uglifyjs').with_name('uglify-js') }
 
         build_reqs = ['# puppet-managed - reviewboard::package class',
                        '# because of pip issues, these have to be installed before ReviewBoard',
-                       '\'Django>=1.6.7,<1.7\'',
+                       'Django>=1.6.7,<1.7',
                        'django-pipeline',
                        'djblets',
                        'django-evolution',
@@ -155,7 +153,7 @@ describe 'reviewboard::package' do
 
         build_reqs = ['# puppet-managed - reviewboard::package class',
                        '# because of pip issues, these have to be installed before ReviewBoard',
-                       '\'Django>=1.6.7,<1.7\'',
+                       'Django>=1.6.7,<1.7',
                        'django-pipeline',
                        'djblets',
                        'django-evolution',

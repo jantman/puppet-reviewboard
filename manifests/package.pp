@@ -55,9 +55,6 @@ class reviewboard::package (
   $base_venv         = '/opt/empty_base_venv',
 ) {
 
-  # for uglifyjs, which is required by djblets, which is required by ReviewBoard
-  require nodejs
-
   validate_absolute_path($virtualenv_script)
   validate_absolute_path($venv_path)
   validate_absolute_path($venv_python)
@@ -78,17 +75,27 @@ class reviewboard::package (
     require    => Python_virtualenv[$base_venv],
   }
 
-  # for uglifyjs, which is required by djblets, which is required by ReviewBoard
-  package {'uglifyjs':
-    ensure   => present,
-    provider => 'npm',
-    require  => Class['nodejs'],
+  if $::osfamily == 'RedHat' {
+    # this is in EPEL. The `npm` install seems broken on Cent6. So use the OS package.
+    package {'uglifyjs':
+      ensure => present,
+      name   => 'uglify-js',
+    }
+  } else {
+    # fall back to npm-based install on other OSes
+    require nodejs
+
+    package {'uglifyjs':
+      ensure   => present,
+      provider => 'npm',
+      require  => Class['nodejs'],
+    }
   }
 
   # the following install ugliness was created for RB 2.0.7;
   # at the very least, 1.7.27 requires 'Django>=1.4.13,<1.5'
   if ( $version != undef and $version !~ /^2\./ ) {
-    fail("ERROR: reviewboard::package only supports ReviewBoard 2.x")
+    fail('ERROR: reviewboard::package only supports ReviewBoard 2.x')
   }
 
   # these are build-time requirements for ReviewBoard 2.x
@@ -96,7 +103,7 @@ class reviewboard::package (
   # need them installed before we try to install ReviewBoard
   $build_reqs = ['# puppet-managed - reviewboard::package class',
                   '# because of pip issues, these have to be installed before ReviewBoard',
-                  '\'Django>=1.6.7,<1.7\'',
+                  'Django>=1.6.7,<1.7',
                   'django-pipeline',
                   'djblets',
                   'django-evolution',
