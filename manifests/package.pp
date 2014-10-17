@@ -75,6 +75,11 @@ class reviewboard::package (
     require    => Python_virtualenv[$base_venv],
   }
 
+  # this is needed by djblets for i18n
+  package {'gettext':
+    ensure => present,
+  }
+
   if $::osfamily == 'RedHat' {
     # this is in EPEL. The `npm` install seems broken on Cent6. So use the OS package.
     package {'uglifyjs':
@@ -140,6 +145,7 @@ class reviewboard::package (
     options           => $build_req_options,
     require           => [File["${venv_path}/puppet_build_requirements.txt"],
                           Package['uglifyjs'],
+                          Package['gettext'],
                           ],
   }
 

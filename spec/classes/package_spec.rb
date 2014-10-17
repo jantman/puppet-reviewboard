@@ -40,6 +40,8 @@ describe 'reviewboard::package' do
 
         it { should contain_package('uglifyjs').with_name('uglify-js') }
 
+        it { should contain_package('gettext') }
+
         build_reqs = ['# puppet-managed - reviewboard::package class',
                        '# because of pip issues, these have to be installed before ReviewBoard',
                        'Django>=1.6.7,<1.7',
