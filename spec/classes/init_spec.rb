@@ -41,13 +41,13 @@ describe 'reviewboard' do
       end
 
       describe "class with specified version on #{osfamily}" do
-        let(:params) {{ :version => '1.2.3'}}
+        let(:params) {{ :version => '2.0.2'}}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
         it { should compile.with_all_deps }
 
         it { should contain_class('reviewboard::package').with({
-                                                                 :version           => '1.2.3',
+                                                                 :version           => '2.0.2',
                                                                  :venv_path         => '/opt/reviewboard',
                                                                  :venv_python       => '/usr/bin/python2.7',
                                                                  :virtualenv_script => '/usr/bin/virtualenv-2.7',

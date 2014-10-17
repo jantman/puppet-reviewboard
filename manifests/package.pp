@@ -85,6 +85,12 @@ class reviewboard::package (
     require  => Class['nodejs'],
   }
 
+  # the following install ugliness was created for RB 2.0.7;
+  # at the very least, 1.7.27 requires 'Django>=1.4.13,<1.5'
+  if ( $version != undef and $version !~ /^2\./ ) {
+    fail("ERROR: reviewboard::package only supports ReviewBoard 2.x")
+  }
+
   # these are build-time requirements for ReviewBoard 2.x
   # apparently `pip` doesn't handle these correctly, so we
   # need them installed before we try to install ReviewBoard

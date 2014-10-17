@@ -95,16 +95,16 @@ describe 'reviewboard::package' do
       end
 
       describe "class with specified version on #{osfamily}" do
-        let(:params) {{ :version => '1.2.3'}}
+        let(:params) {{ :version => '2.0.2'}}
         
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
         it { should compile.with_all_deps }
 
-        it { should contain_python_package('/opt/reviewboard,ReviewBoard==1.2.3').with({
+        it { should contain_python_package('/opt/reviewboard,ReviewBoard==2.0.2').with({
                                                                                   :ensure        => 'present',
                                                                                   :python_prefix => '/opt/reviewboard',
-                                                                                  :requirements  => 'ReviewBoard==1.2.3',
+                                                                                  :requirements  => 'ReviewBoard==2.0.2',
                                                                                   :options       => install_opts,
                                                                                   :require       => 'Python_package[/opt/reviewboard,/opt/reviewboard/puppet_build_requirements.txt]'
                                                                                 })
@@ -229,6 +229,17 @@ describe 'reviewboard::package' do
                                                                                   :require       => 'Python_package[/opt/reviewboard,/opt/reviewboard/puppet_build_requirements.txt]'
                                                                                 })
         }
+      end
+      describe "class with specified non-2.x version on #{osfamily}" do
+        let(:params) {{ :version => '1.7.27'}}
+        
+        let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
+
+        it do
+          expect {
+            should contain_python_package('/opt/reviewboard,ReviewBoard==1.7.27')
+          }.to raise_error(Puppet::Error, /reviewboard::package only supports ReviewBoard 2.x/)
+        end
       end
     end
   end
