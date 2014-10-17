@@ -136,5 +136,7 @@ To run again without re-provisioning the vm:
 
 For more information on running the integration/acceptance tests, see [How to Write a Beaker Test for a Module](https://github.com/puppetlabs/beaker/wiki/How-to-Write-a-Beaker-Test-for-a-Module).
 
+**Note** that ``spec_helper_acceptance.rb`` currently forces Puppet installation to 3.6.2, as I couldn't figure out how to get facts and fixture modules working right with ``puppet apply`` in 3.7.x.
+
 Use `vagrant destroy` to stop the test VM.
 
