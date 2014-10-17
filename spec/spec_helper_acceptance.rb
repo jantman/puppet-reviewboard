@@ -40,7 +40,10 @@ hosts.each do |host|
   else
     # Install Puppet
     install_package host, 'rubygems'
-    on host, 'gem install puppet --no-ri --no-rdoc'
+    # make sure we only have one
+    on host, 'gem list puppet | grep -q puppet && gem uninstall puppet --all || /bin/true'
+    # TODO: having issues with facts from fixture modules and 3.7's directory environments; force 3.6.2 for now
+    on host, 'gem install puppet -v 3.6.2 --no-ri --no-rdoc'
     on host, "mkdir -p #{host['distmoduledir']}"
   end
 end
