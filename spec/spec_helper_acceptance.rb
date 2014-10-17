@@ -46,6 +46,10 @@ hosts.each do |host|
     on host, 'gem install puppet -v 3.6.2 --no-ri --no-rdoc'
     on host, "mkdir -p #{host['distmoduledir']}"
   end
+  if host['platform'] =~ /el/
+    # setup EPEL, until https://github.com/puppetlabs/beaker/issues/447 is done
+    on host, "yum -y update ca-certificates && yum -y install epel-release && yum clean all && yum makecache"
+  end
 end
 
 UNSUPPORTED_PLATFORMS = ['AIX','windows','Solaris','Suse']
