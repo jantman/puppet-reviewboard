@@ -1,6 +1,19 @@
 require 'spec_helper'
 
 default_version = '2.0.2'
+install_opts = ['--allow-external',
+                'ReviewBoard',
+                '--allow-unverified',
+                'ReviewBoard',
+                '--allow-external',
+                'django-evolution', 
+                '--allow-unverified',
+                'django-evolution',
+                '--allow-external',
+                'Djblets',
+                '--allow-unverified',
+                'Djblets',
+               ]
 
 describe 'reviewboard::package' do
 
@@ -35,7 +48,7 @@ describe 'reviewboard::package' do
                                                                                   :ensure        => 'present',
                                                                                   :python_prefix => '/opt/reviewboard',
                                                                                   :requirements  => 'ReviewBoard',
-                                                                                  :options       => ['--allow-external', 'ReviewBoard', '--allow-unverified', 'ReviewBoard'],
+                                                                                  :options       => install_opts,
                                                                                   :require       => ['Python_virtualenv[/opt/reviewboard]', 'Python_virtualenv[/opt/empty_base_venv]']
                                                                                 })
         }
@@ -52,7 +65,7 @@ describe 'reviewboard::package' do
                                                                                   :ensure        => 'present',
                                                                                   :python_prefix => '/opt/reviewboard',
                                                                                   :requirements  => 'ReviewBoard==1.2.3',
-                                                                                  :options       => ['--allow-external', 'ReviewBoard', '--allow-unverified', 'ReviewBoard'],
+                                                                                  :options       => install_opts,
                                                                                   :require       => ['Python_virtualenv[/opt/reviewboard]', 'Python_virtualenv[/opt/empty_base_venv]']
                                                                                 })
         }
@@ -103,7 +116,7 @@ describe 'reviewboard::package' do
                                                                                   :ensure        => 'present',
                                                                                   :python_prefix => '/foo/bar',
                                                                                   :requirements  => 'ReviewBoard',
-                                                                                  :options       => ['--allow-external', 'ReviewBoard', '--allow-unverified', 'ReviewBoard'],
+                                                                                  :options       => install_opts,
                                                                                   :require       => ['Python_virtualenv[/foo/bar]', 'Python_virtualenv[/opt/empty_base_venv]']
                                                                                 })
         }
@@ -129,7 +142,7 @@ describe 'reviewboard::package' do
                                                                                   :ensure        => 'present',
                                                                                   :python_prefix => '/opt/reviewboard',
                                                                                   :requirements  => 'ReviewBoard',
-                                                                                  :options       => ['--allow-external', 'ReviewBoard', '--allow-unverified', 'ReviewBoard'],
+                                                                                  :options       => install_opts,
                                                                                   :require       => ['Python_virtualenv[/opt/reviewboard]', 'Python_virtualenv[/foo/bar]']
                                                                                 })
         }
