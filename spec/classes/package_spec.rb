@@ -35,6 +35,7 @@ describe 'reviewboard::package' do
                                                                                   :ensure        => 'present',
                                                                                   :python_prefix => '/opt/reviewboard',
                                                                                   :requirements  => 'ReviewBoard',
+                                                                                  :options       => '--allow-external ReviewBoard',
                                                                                   :require       => ['Python_virtualenv[/opt/reviewboard]', 'Python_virtualenv[/opt/empty_base_venv]']
                                                                                 })
         }
@@ -51,6 +52,7 @@ describe 'reviewboard::package' do
                                                                                   :ensure        => 'present',
                                                                                   :python_prefix => '/opt/reviewboard',
                                                                                   :requirements  => 'ReviewBoard==1.2.3',
+                                                                                  :options       => '--allow-external ReviewBoard',
                                                                                   :require       => ['Python_virtualenv[/opt/reviewboard]', 'Python_virtualenv[/opt/empty_base_venv]']
                                                                                 })
         }
@@ -101,6 +103,7 @@ describe 'reviewboard::package' do
                                                                                   :ensure        => 'present',
                                                                                   :python_prefix => '/foo/bar',
                                                                                   :requirements  => 'ReviewBoard',
+                                                                                  :options       => '--allow-external ReviewBoard',
                                                                                   :require       => ['Python_virtualenv[/foo/bar]', 'Python_virtualenv[/opt/empty_base_venv]']
                                                                                 })
         }
@@ -126,6 +129,7 @@ describe 'reviewboard::package' do
                                                                                   :ensure        => 'present',
                                                                                   :python_prefix => '/opt/reviewboard',
                                                                                   :requirements  => 'ReviewBoard',
+                                                                                  :options       => '--allow-external ReviewBoard',
                                                                                   :require       => ['Python_virtualenv[/opt/reviewboard]', 'Python_virtualenv[/foo/bar]']
                                                                                 })
         }

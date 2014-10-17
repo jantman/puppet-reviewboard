@@ -84,6 +84,7 @@ class reviewboard::package (
     ensure        => present,
     python_prefix => $venv_path,
     requirements  => $req,
+    options       => '--allow-external ReviewBoard',
     require       => [Python_virtualenv[$venv_path],
                       Python_virtualenv[$base_venv],
                       ],
