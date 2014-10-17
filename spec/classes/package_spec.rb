@@ -1,18 +1,11 @@
 require 'spec_helper'
 
 default_version = '2.0.2'
+
 install_opts = ['--allow-external',
                 'ReviewBoard',
                 '--allow-unverified',
                 'ReviewBoard',
-                '--allow-external',
-                'django-evolution', 
-                '--allow-unverified',
-                'django-evolution',
-                '--allow-external',
-                'Djblets',
-                '--allow-unverified',
-                'Djblets',
                ]
 
 describe 'reviewboard::package' do
@@ -30,6 +23,8 @@ describe 'reviewboard::package' do
 
         it { should compile.with_all_deps }
 
+        it { should contain_class('nodejs') }
+
         it { should contain_python_virtualenv('/opt/empty_base_venv').with({
                                                                              :ensure     => 'present',
                                                                              :virtualenv => '/usr/bin/virtualenv-2.7',
@@ -40,16 +35,61 @@ describe 'reviewboard::package' do
         it { should contain_python_virtualenv('/opt/reviewboard').with({
                                                                          :ensure     => 'present',
                                                                          :virtualenv => '/usr/bin/virtualenv-2.7',
-                                                                         :python     => '/usr/bin/python2.7'
+                                                                         :python     => '/usr/bin/python2.7',
+                                                                         :require    => 'Python_virtualenv[/opt/empty_base_venv]',
                                                                        })
         }
+
+        it { should contain_package('uglifyjs').with_provider('npm').with_require('Class[Nodejs]') }
+
+        build_reqs = ['# puppet-managed - reviewboard::package class',
+                       '# because of pip issues, these have to be installed before ReviewBoard',
+                       '\'Django>=1.6.7,<1.7\'',
+                       'django-pipeline',
+                       'djblets',
+                       'django-evolution',
+                       'pygments',
+                       'docutils',
+                       'markdown',
+                       'paramiko',
+                       'mimeparse',
+                       'haystack',
+                      ]
+        build_reqs_s = build_reqs.join("\n")
+
+        build_req_options = ['--allow-external',
+                             'django-evolution',
+                             '--allow-unverified',
+                             'django-evolution',
+                             '--allow-external',
+                             'djblets',
+                             '--allow-unverified',
+                             'djblets',
+                            ]
+
+        it { should contain_file('/opt/reviewboard/puppet_build_requirements.txt').with({
+                                                                                          :ensure  => 'present',
+                                                                                          :mode    => '0644',
+                                                                                          :content => build_reqs_s,
+                                                                                          :require => 'Python_virtualenv[/opt/reviewboard]',
+                                                                                          }) }
+
+        it { should contain_python_package('/opt/reviewboard,/opt/reviewboard/puppet_build_requirements.txt').with({
+                                                                                                                     :ensure            => 'present',
+                                                                                                                     :python_prefix     => '/opt/reviewboard',
+                                                                                                                     :requirements_file => '/opt/reviewboard/puppet_build_requirements.txt',
+                                                                                                                     :options           => build_req_options,
+                                                                                                                     :require           => ['File[/opt/reviewboard/puppet_build_requirements.txt]',
+                                                                                                                                            'Package[uglifyjs]',
+                                                                                                                                           ]
+                                                                                                                     }) }
 
         it { should contain_python_package('/opt/reviewboard,ReviewBoard').with({
                                                                                   :ensure        => 'present',
                                                                                   :python_prefix => '/opt/reviewboard',
                                                                                   :requirements  => 'ReviewBoard',
                                                                                   :options       => install_opts,
-                                                                                  :require       => ['Python_virtualenv[/opt/reviewboard]', 'Python_virtualenv[/opt/empty_base_venv]']
+                                                                                  :require       => 'Python_package[/opt/reviewboard,/opt/reviewboard/puppet_build_requirements.txt]'
                                                                                 })
         }
       end
@@ -66,7 +106,7 @@ describe 'reviewboard::package' do
                                                                                   :python_prefix => '/opt/reviewboard',
                                                                                   :requirements  => 'ReviewBoard==1.2.3',
                                                                                   :options       => install_opts,
-                                                                                  :require       => ['Python_virtualenv[/opt/reviewboard]', 'Python_virtualenv[/opt/empty_base_venv]']
+                                                                                  :require       => 'Python_package[/opt/reviewboard,/opt/reviewboard/puppet_build_requirements.txt]'
                                                                                 })
         }
       end
@@ -106,18 +146,61 @@ describe 'reviewboard::package' do
         it { should compile.with_all_deps }
 
         it { should contain_python_virtualenv('/foo/bar').with({
-                                                                         :ensure     => 'present',
-                                                                         :virtualenv => '/usr/bin/virtualenv-2.7',
-                                                                         :python     => '/usr/bin/python2.7'
-                                                                       })
+                                                                 :ensure     => 'present',
+                                                                 :virtualenv => '/usr/bin/virtualenv-2.7',
+                                                                 :python     => '/usr/bin/python2.7',
+                                                                 :require    => 'Python_virtualenv[/opt/empty_base_venv]',
+                                                               })
         }
 
+        build_reqs = ['# puppet-managed - reviewboard::package class',
+                       '# because of pip issues, these have to be installed before ReviewBoard',
+                       '\'Django>=1.6.7,<1.7\'',
+                       'django-pipeline',
+                       'djblets',
+                       'django-evolution',
+                       'pygments',
+                       'docutils',
+                       'markdown',
+                       'paramiko',
+                       'mimeparse',
+                       'haystack',
+                      ]
+        build_reqs_s = build_reqs.join("\n")
+
+        build_req_options = ['--allow-external',
+                             'django-evolution',
+                             '--allow-unverified',
+                             'django-evolution',
+                             '--allow-external',
+                             'djblets',
+                             '--allow-unverified',
+                             'djblets',
+                            ]
+
+        it { should contain_file('/foo/bar/puppet_build_requirements.txt').with({
+                                                                                  :ensure  => 'present',
+                                                                                  :mode    => '0644',
+                                                                                  :content => build_reqs_s,
+                                                                                  :require => 'Python_virtualenv[/foo/bar]',
+                                                                                }) }
+
+        it { should contain_python_package('/foo/bar,/foo/bar/puppet_build_requirements.txt').with({
+                                                                                                     :ensure            => 'present',
+                                                                                                     :python_prefix     => '/foo/bar',
+                                                                                                     :requirements_file => '/foo/bar/puppet_build_requirements.txt',
+                                                                                                     :options           => build_req_options,
+                                                                                                     :require           => ['File[/foo/bar/puppet_build_requirements.txt]',
+                                                                                                                            'Package[uglifyjs]',
+                                                                                                                           ]
+                                                                                                   }) }
+
         it { should contain_python_package('/foo/bar,ReviewBoard').with({
-                                                                                  :ensure        => 'present',
-                                                                                  :python_prefix => '/foo/bar',
-                                                                                  :requirements  => 'ReviewBoard',
-                                                                                  :options       => install_opts,
-                                                                                  :require       => ['Python_virtualenv[/foo/bar]', 'Python_virtualenv[/opt/empty_base_venv]']
+                                                                          :ensure        => 'present',
+                                                                          :python_prefix => '/foo/bar',
+                                                                          :requirements  => 'ReviewBoard',
+                                                                          :options       => install_opts,
+                                                                          :require       => 'Python_package[/foo/bar,/foo/bar/puppet_build_requirements.txt]'
                                                                                 })
         }
       end
@@ -143,7 +226,7 @@ describe 'reviewboard::package' do
                                                                                   :python_prefix => '/opt/reviewboard',
                                                                                   :requirements  => 'ReviewBoard',
                                                                                   :options       => install_opts,
-                                                                                  :require       => ['Python_virtualenv[/opt/reviewboard]', 'Python_virtualenv[/foo/bar]']
+                                                                                  :require       => 'Python_package[/opt/reviewboard,/opt/reviewboard/puppet_build_requirements.txt]'
                                                                                 })
         }
       end

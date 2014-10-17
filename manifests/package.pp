@@ -55,6 +55,9 @@ class reviewboard::package (
   $base_venv         = '/opt/empty_base_venv',
 ) {
 
+  # for uglifyjs, which is required by djblets, which is required by ReviewBoard
+  require nodejs
+
   validate_absolute_path($virtualenv_script)
   validate_absolute_path($venv_path)
   validate_absolute_path($venv_python)
@@ -72,6 +75,59 @@ class reviewboard::package (
     ensure     => present,
     virtualenv => $virtualenv_script,
     python     => $venv_python,
+    require    => Python_virtualenv[$base_venv],
+  }
+
+  # for uglifyjs, which is required by djblets, which is required by ReviewBoard
+  package {'uglifyjs':
+    ensure   => present,
+    provider => 'npm',
+    require  => Class['nodejs'],
+  }
+
+  # these are build-time requirements for ReviewBoard 2.x
+  # apparently `pip` doesn't handle these correctly, so we
+  # need them installed before we try to install ReviewBoard
+  $build_reqs = ['# puppet-managed - reviewboard::package class',
+                  '# because of pip issues, these have to be installed before ReviewBoard',
+                  '\'Django>=1.6.7,<1.7\'',
+                  'django-pipeline',
+                  'djblets',
+                  'django-evolution',
+                  'pygments',
+                  'docutils',
+                  'markdown',
+                  'paramiko',
+                  'mimeparse',
+                  'haystack',
+                  ]
+
+  $build_req_options = ['--allow-external',
+                        'django-evolution',
+                        '--allow-unverified',
+                        'django-evolution',
+                        '--allow-external',
+                        'djblets',
+                        '--allow-unverified',
+                        'djblets']
+
+  # requirements file for the above
+  file {"${venv_path}/puppet_build_requirements.txt":
+    ensure  => present,
+    mode    => '0644',
+    content => join($build_reqs, "\n"),
+    require => Python_virtualenv[$venv_path],
+  }
+
+  # install the above requirements file
+  python_package {"${venv_path},${venv_path}/puppet_build_requirements.txt":
+    ensure            => present,
+    python_prefix     => $venv_path,
+    requirements_file => "${venv_path}/puppet_build_requirements.txt",
+    options           => $build_req_options,
+    require           => [File["${venv_path}/puppet_build_requirements.txt"],
+                          Package['uglifyjs'],
+                          ],
   }
 
   if $version == undef {
@@ -88,18 +144,8 @@ class reviewboard::package (
                       'ReviewBoard',
                       '--allow-unverified',
                       'ReviewBoard',
-                      '--allow-external',
-                      'django-evolution',
-                      '--allow-unverified',
-                      'django-evolution',
-                      '--allow-external',
-                      'Djblets',
-                      '--allow-unverified',
-                      'Djblets',
                       ],
-    require       => [Python_virtualenv[$venv_path],
-                      Python_virtualenv[$base_venv],
-                      ],
+    require       => Python_package["${venv_path},${venv_path}/puppet_build_requirements.txt"],
   }
 
 }
