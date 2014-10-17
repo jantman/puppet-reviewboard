@@ -59,6 +59,10 @@ RSpec.configure do |c|
 
   # Configure all nodes in nodeset
   c.before :suite do
+    # clean up old modules; some changes seem to not be syncing over
+    hosts.each do |host|
+      on host, shell('rm -Rf /etc/puppet/modules/*')
+    end
     # Install module and dependencies
     puppet_module_install(:source => proj_root, :module_name => 'reviewboard')
     # workaround for recursive symlink issue
