@@ -5,7 +5,6 @@ spec/fixtures
 .rspec_system
 .tmp
 Puppetfile.lock
-Gemfile.lock
 modules
 pkg
 vendor
