@@ -63,18 +63,16 @@ RSpec.configure do |c|
 
   # Configure all nodes in nodeset
   c.before :suite do
-    # clean up old modules; some changes seem to not be syncing over
-    hosts.each do |host|
-      on host, shell('rm -Rf /etc/puppet/modules/*')
-    end
     # Install module and dependencies
     puppet_module_install(:source => proj_root, :module_name => 'reviewboard')
-    # workaround for recursive symlink issue
+    # make sure fixtures are there
     system("bundle exec rake spec_prep")
-    ['stdlib', 'apache', 'concat', 'postgresql', 'virtualenv', 'python', 'yum', 'nodejs'].each do |m|
-      puppet_module_install(:source => File.join(proj_root, 'spec', 'fixtures', 'modules', m), :module_name => m)
-    end
     hosts.each do |host|
+      # install fixture modules
+      ['stdlib', 'apache', 'concat', 'postgresql', 'virtualenv', 'python', 'yum', 'nodejs'].each do |m|
+        scp_to host, File.join(proj_root, 'spec', 'fixtures', 'modules', m), File.join('/etc/puppet/modules', m)
+      end
+      # boilerplate
       on host, shell('chmod 755 /root')
       if fact('osfamily') == 'Debian'
         shell("echo \"en_US ISO-8859-1\nen_NG.UTF-8 UTF-8\nen_US.UTF-8 UTF-8\n\" > /etc/locale.gen")
