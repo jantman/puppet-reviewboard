@@ -7,6 +7,7 @@ group :test do
   gem "rspec-puppet", :git => 'https://github.com/rodjek/rspec-puppet.git'
   gem "puppet-syntax"
   gem "puppetlabs_spec_helper", '~> 0.4.0' # workaround for https://tickets.puppetlabs.com/browse/MODULES-1190
+  gem "rspec_junit_formatter"
 end
 
 group :development do
