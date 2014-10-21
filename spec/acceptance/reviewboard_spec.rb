@@ -169,12 +169,6 @@ describe 'reviewboard' do
       shell('rm -Rf /opt/reviewboard /opt/empty_base_venv /opt/otherrbvenv /tmp/thirdrbvenv /tmp/basevenv')
       shell('yum -y install python-virtualenv')
 
-      # prerequisites
-      pp = <<-EOS.unindent
-          class {'python::python27':}
-      EOS
-      apply_manifest(pp, :catch_failures => true)
-
       pp = <<-EOS.unindent
           class {'reviewboard':
             venv_path         => '/tmp/thirdrbvenv',
