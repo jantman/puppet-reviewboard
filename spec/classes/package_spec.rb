@@ -2,9 +2,7 @@ require 'spec_helper'
 
 default_version = '2.0.2'
 
-install_opts = ['--allow-external',
-                'ReviewBoard',
-                '--allow-unverified',
+install_opts = ['--allow-unverified',
                 'ReviewBoard',
                ]
 
@@ -38,6 +36,15 @@ describe 'reviewboard::package' do
                                                                        })
         }
 
+        it { should contain_python_package('/opt/reviewboard,pip>=1.5.1').with({
+                                                                                  :ensure        => 'present',
+                                                                                  :python_prefix => '/opt/reviewboard',
+                                                                                  :requirements  => 'pip>=1.5.1',
+                                                                                  :options       => '--upgrade',
+                                                                                  :require       => 'Python_virtualenv[/opt/reviewboard]',
+                                                                                })
+        }
+
         it { should contain_package('uglifyjs').with_name('uglify-js') }
 
         it { should contain_package('gettext') }
@@ -57,12 +64,8 @@ describe 'reviewboard::package' do
                       ]
         build_reqs_s = build_reqs.join("\n")
 
-        build_req_options = ['--allow-external',
+        build_req_options = ['--allow-unverified',
                              'django-evolution',
-                             '--allow-unverified',
-                             'django-evolution',
-                             '--allow-external',
-                             'djblets',
                              '--allow-unverified',
                              'djblets',
                             ]
@@ -81,6 +84,8 @@ describe 'reviewboard::package' do
                                                                                                                      :options           => build_req_options,
                                                                                                                      :require           => ['File[/opt/reviewboard/puppet_build_requirements.txt]',
                                                                                                                                             'Package[uglifyjs]',
+                                                                                                                                            'Package[gettext]',
+                                                                                                                                            'Python_package[/opt/reviewboard,pip>=1.5.1]',
                                                                                                                                            ]
                                                                                                                      }) }
 
@@ -153,6 +158,15 @@ describe 'reviewboard::package' do
                                                                })
         }
 
+        it { should contain_python_package('/foo/bar,pip>=1.5.1').with({
+                                                                                  :ensure        => 'present',
+                                                                                  :python_prefix => '/foo/bar',
+                                                                                  :requirements  => 'pip>=1.5.1',
+                                                                                  :options       => '--upgrade',
+                                                                                  :require       => 'Python_virtualenv[/foo/bar]',
+                                                                                })
+        }
+
         build_reqs = ['# puppet-managed - reviewboard::package class',
                        '# because of pip issues, these have to be installed before ReviewBoard',
                        'Django>=1.6.7,<1.7',
@@ -168,12 +182,8 @@ describe 'reviewboard::package' do
                       ]
         build_reqs_s = build_reqs.join("\n")
 
-        build_req_options = ['--allow-external',
+        build_req_options = ['--allow-unverified',
                              'django-evolution',
-                             '--allow-unverified',
-                             'django-evolution',
-                             '--allow-external',
-                             'djblets',
                              '--allow-unverified',
                              'djblets',
                             ]
@@ -192,6 +202,8 @@ describe 'reviewboard::package' do
                                                                                                      :options           => build_req_options,
                                                                                                      :require           => ['File[/foo/bar/puppet_build_requirements.txt]',
                                                                                                                             'Package[uglifyjs]',
+                                                                                                                            'Package[gettext]',
+                                                                                                                            'Python_package[/foo/bar,pip>=1.5.1]',
                                                                                                                            ]
                                                                                                    }) }
 
