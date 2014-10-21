@@ -72,6 +72,9 @@ RSpec.configure do |c|
       ['stdlib', 'apache', 'concat', 'postgresql', 'virtualenv', 'python', 'yum', 'nodejs'].each do |m|
         scp_to host, File.join(proj_root, 'spec', 'fixtures', 'modules', m), File.join('/etc/puppet/modules', m)
       end
+      # facts in modules (plugins-in-modules)
+      on host, shell('mkdir -p /var/lib/puppet/lib/facter/')
+      on host, shell('find /etc/puppet/modules/*/lib/facter -iname "*.rb" -exec cp {} /var/lib/puppet/lib/facter/ \;')
       # boilerplate
       on host, shell('chmod 755 /root')
       if fact('osfamily') == 'Debian'
