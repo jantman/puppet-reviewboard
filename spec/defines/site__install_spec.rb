@@ -46,10 +46,9 @@ describe 'reviewboard::site::install', :type => :define do
                  "--admin-email myuser@example.com",
                ]
         argstr = args.join(" ")
-        command = "rb-site install /opt/reviewboard/site #{argstr}"
+        command = "/opt/reviewboard/bin/rb-site install /opt/reviewboard/site #{argstr}"
         it { should contain_exec('rb-site install /opt/reviewboard/site').with({
                                                                                  :command => command,
-                                                                                 :path    => '/usr/bin',
                                                                                  :require => 'Class[Reviewboard::Package]',
                                                                                  :creates => '/opt/reviewboard/site',
                                                                                })
