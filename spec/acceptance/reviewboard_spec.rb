@@ -44,10 +44,6 @@ describe 'reviewboard' do
         its(:stderr) { should match /Python 2\.7\.8/ }
       end
 
-      describe command('/opt/reviewboard/bin/virtualenv --version') do
-        its(:stdout) { should match /1\.11/ }
-      end
-
       describe command('/opt/reviewboard/bin/pip freeze') do
         its(:stdout) { should match /Django==1\.6/ }
         its(:stdout) { should match /django-pipeline/ }
@@ -74,10 +70,6 @@ describe 'reviewboard' do
 
       describe command('/opt/empty_base_venv/bin/python --version') do
         its(:stderr) { should match /Python 2\.7\.8/ }
-      end
-
-      describe command('/opt/empty_base_venv/bin/virtualenv --version') do
-        its(:stdout) { should match /1\.11/ }
       end
 
       describe command('/opt/empty_base_venv/bin/pip freeze') do
@@ -137,10 +129,6 @@ describe 'reviewboard' do
         its(:stderr) { should match /Python 2\.7\.8/ }
       end
 
-      describe command('/tmp/otherrbvenv/bin/virtualenv --version') do
-        its(:stdout) { should match /1\.11/ }
-      end
-
       describe command('/tmp/otherrbvenv/bin/pip freeze') do
         its(:stdout) { should match /Django==1\.6/ }
         its(:stdout) { should match /django-pipeline/ }
@@ -167,10 +155,6 @@ describe 'reviewboard' do
 
       describe command('/opt/empty_base_venv/bin/python --version') do
         its(:stderr) { should match /Python 2\.7\.8/ }
-      end
-
-      describe command('/opt/empty_base_venv/bin/virtualenv --version') do
-        its(:stdout) { should match /1\.11/ }
       end
 
       describe command('/opt/empty_base_venv/bin/pip freeze') do
@@ -233,10 +217,6 @@ describe 'reviewboard' do
         its(:stderr) { should match /Python 2\.6/ }
       end
 
-      describe command('/tmp/thirdrbvenv/bin/virtualenv --version') do
-        its(:stdout) { should match /1\.10/ }
-      end
-
       describe command('/tmp/thirdrbvenv/bin/pip freeze') do
         its(:stdout) { should match /Django==1\.6/ }
         its(:stdout) { should match /django-pipeline/ }
@@ -263,10 +243,6 @@ describe 'reviewboard' do
 
       describe command('/opt/empty_base_venv/bin/python --version') do
         its(:stderr) { should match /Python 2\.6/ }
-      end
-
-      describe command('/opt/empty_base_venv/bin/virtualenv --version') do
-        its(:stdout) { should match /1\.10/ }
       end
 
       describe command('/opt/empty_base_venv/bin/pip freeze') do
@@ -327,10 +303,6 @@ describe 'reviewboard' do
         its(:stderr) { should match /Python 2\.7\.8/ }
       end
 
-      describe command('/tmp/thirdrbenv/bin/virtualenv --version') do
-        its(:stdout) { should match /1\.11/ }
-      end
-
       describe command('/tmp/thirdrbvenv/bin/pip freeze') do
         its(:stdout) { should match /Django==1\.6/ }
         its(:stdout) { should match /django-pipeline/ }
@@ -361,10 +333,6 @@ describe 'reviewboard' do
 
       describe command('/tmp/basevenv/bin/python --version') do
         its(:stderr) { should match /Python 2\.7\.8/ }
-      end
-
-      describe command('/tmp/basevenv/bin/virtualenv --version') do
-        its(:stdout) { should match /1\.11/ }
       end
 
       describe command('/tmp/basevenv/bin/pip freeze') do
@@ -416,10 +384,6 @@ describe 'reviewboard' do
         its(:stderr) { should match /Python 2\.7\.8/ }
       end
 
-      describe command('/opt/reviewboard/bin/virtualenv --version') do
-        its(:stdout) { should match /1\.11/ }
-      end
-
       describe command('/opt/reviewboard/bin/pip freeze') do
         its(:stdout) { should match /Django==1\.6/ }
         its(:stdout) { should match /django-pipeline/ }
@@ -446,10 +410,6 @@ describe 'reviewboard' do
 
       describe command('/opt/empty_base_venv/bin/python --version') do
         its(:stderr) { should match /Python 2\.7\.8/ }
-      end
-
-      describe command('/opt/empty_base_venv/bin/virtualenv --version') do
-        its(:stdout) { should match /1\.11/ }
       end
 
       describe command('/opt/empty_base_venv/bin/pip freeze') do
@@ -501,10 +461,6 @@ describe 'reviewboard' do
         its(:stderr) { should match /Python 2\.7\.8/ }
       end
 
-      describe command('/opt/reviewboard/bin/virtualenv --version') do
-        its(:stdout) { should match /1\.11/ }
-      end
-
       describe command('/opt/reviewboard/bin/pip freeze') do
         its(:stdout) { should match /Django==1\.6/ }
         its(:stdout) { should match /django-pipeline/ }
@@ -531,10 +487,6 @@ describe 'reviewboard' do
 
       describe command('/opt/empty_base_venv/bin/python --version') do
         its(:stderr) { should match /Python 2\.7\.8/ }
-      end
-
-      describe command('/opt/empty_base_venv/bin/virtualenv --version') do
-        its(:stdout) { should match /1\.11/ }
       end
 
       describe command('/opt/empty_base_venv/bin/pip freeze') do
