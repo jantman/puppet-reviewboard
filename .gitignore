@@ -9,3 +9,4 @@ modules
 pkg
 vendor
 beaker.out
+results.xml
