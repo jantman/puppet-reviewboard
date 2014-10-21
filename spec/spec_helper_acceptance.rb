@@ -64,12 +64,15 @@ RSpec.configure do |c|
   # Configure all nodes in nodeset
   c.before :suite do
     # Install module and dependencies
-    puppet_module_install(:source => proj_root, :module_name => 'reviewboard')
     # make sure fixtures are there
     system("bundle exec rake spec_prep")
     hosts.each do |host|
+      puts "installing module 'reviewboard' from project root #{proj_root}"
+      # having issues with puppet_module_install and deep directories - i.e. manifests/provider/db
+      scp_to host, File.join(proj_root), '/etc/puppet/modules/reviewboard', :ignore => ['.bundle', '.git', '.idea', '.vagrant', '.vendor', 'acceptance', 'spec', 'tests', 'log']
       # install fixture modules
       ['stdlib', 'apache', 'concat', 'postgresql', 'virtualenv', 'python', 'yum', 'nodejs'].each do |m|
+        puts "installing module from fixtures/: #{m}"
         scp_to host, File.join(proj_root, 'spec', 'fixtures', 'modules', m), File.join('/etc/puppet/modules', m)
       end
       # facts in modules (plugins-in-modules)

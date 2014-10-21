@@ -7,7 +7,9 @@ fixtures:
     yum: "git@github.com:coxmediagroup/puppet-yum.git"
     apache: "git://github.com/puppetlabs/puppetlabs-apache.git"
     concat: "git://github.com/puppetlabs/puppetlabs-concat.git"
-    postgresql: "git://github.com/puppetlabs/puppetlabs-postgresql.git"
+    postgresql:
+      repo: "git://github.com/puppetlabs/puppetlabs-postgresql.git"
+      ref: '3.2.0'
     mysql: "git://github.com/puppetlabs/puppetlabs-mysql.git"
     nodejs: "git://github.com/puppetlabs/puppetlabs-nodejs.git"
   symlinks:
