@@ -120,12 +120,8 @@ class reviewboard::package (
                   'haystack',
                   ]
 
-  $build_req_options = ['--allow-external',
+  $build_req_options = ['--allow-unverified',
                         'django-evolution',
-                        '--allow-unverified',
-                        'django-evolution',
-                        '--allow-external',
-                        'djblets',
                         '--allow-unverified',
                         'djblets']
 
