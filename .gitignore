@@ -8,3 +8,4 @@ Puppetfile.lock
 modules
 pkg
 vendor
+beaker.out
