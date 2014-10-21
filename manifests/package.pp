@@ -75,6 +75,15 @@ class reviewboard::package (
     require    => Python_virtualenv[$base_venv],
   }
 
+  # make sure we have an acceptably new pip
+  python_package {"${venv_path},pip>=1.5.1":
+    ensure => present,
+    python_prefix => $venv_path
+    requirements  => 'pip>=1.5.1',
+    options       => '--upgrade',
+    require       => Python_virtualenv[$venv_path],
+  }
+
   # this is needed by djblets for i18n
   package {'gettext':
     ensure => present,
@@ -142,6 +151,7 @@ class reviewboard::package (
     require           => [File["${venv_path}/puppet_build_requirements.txt"],
                           Package['uglifyjs'],
                           Package['gettext'],
+                          Python_package["${venv_path},pip>=1.5.1"],
                           ],
   }
 
