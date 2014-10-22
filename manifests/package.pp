@@ -127,6 +127,7 @@ class reviewboard::package (
                   'paramiko',
                   'mimeparse',
                   'haystack',
+                  'psycopg2',
                   ]
 
   $build_req_options = ['--allow-unverified',

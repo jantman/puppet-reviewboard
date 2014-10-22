@@ -61,6 +61,7 @@ describe 'reviewboard::package' do
                        'paramiko',
                        'mimeparse',
                        'haystack',
+                       'psycopg2',
                       ]
         build_reqs_s = build_reqs.join("\n")
 
@@ -179,6 +180,7 @@ describe 'reviewboard::package' do
                        'paramiko',
                        'mimeparse',
                        'haystack',
+                       'psycopg2',
                       ]
         build_reqs_s = build_reqs.join("\n")
 
