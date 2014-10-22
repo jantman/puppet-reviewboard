@@ -21,6 +21,9 @@ describe 'reviewboard::site' do
         class {'postgresql::repo':
           version => '9.3',
         }
+        class {'postgresql::lib::devel':
+          package_name => 'postgresql93-devel',
+        }
     EOS
 
     describe 'prerequisites' do
