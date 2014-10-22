@@ -41,6 +41,7 @@ describe 'reviewboard::site', :type => :define do
                                                                           :cache      => 'memcached',
                                                                           :cacheinfo  => 'localhost:11211',
                                                                           :require    => 'Reviewboard::Provider::Db[/opt/reviewboard/site]',
+                                                                          :venv_path  => '/opt/reviewboard',
                                                                           })
         }
 

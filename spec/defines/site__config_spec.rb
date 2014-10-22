@@ -7,9 +7,10 @@ describe 'reviewboard::site::config', :type => :define do
     ['RedHat'].each do |osfamily|
       describe "on #{osfamily}" do
         let(:params) {{
-            :site   => '/opt/reviewboard/site',
-            :key    => 'foo',
-            :value  => 'bar'
+            :site      => '/opt/reviewboard/site',
+            :key       => 'foo',
+            :value     => 'bar',
+            :venv_path => '/opt/reviewboard',
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
         let :pre_condition do
@@ -21,6 +22,8 @@ describe 'reviewboard::site::config', :type => :define do
         end
 
         it { should compile.with_all_deps }
+
+        it { should contain_class('reviewboard') }
 
         setcommand = "/opt/reviewboard/bin/rb-site manage /opt/reviewboard/site set-siteconfig -- --key 'foo' --value 'bar'"
         getcommand = "/opt/reviewboard/bin/rb-site manage /opt/reviewboard/site get-siteconfig -- --key 'foo' | grep '^bar$'"
@@ -34,9 +37,10 @@ describe 'reviewboard::site::config', :type => :define do
       end
       describe "handle alternate venv path on #{osfamily}" do
         let(:params) {{
-            :site   => '/opt/reviewboard/site',
-            :key    => 'foo',
-            :value  => 'bar'
+            :site      => '/opt/reviewboard/site',
+            :key       => 'foo',
+            :value     => 'bar',
+            :venv_path => '/foo/bar',
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
         let :pre_condition do
@@ -50,6 +54,8 @@ describe 'reviewboard::site::config', :type => :define do
         end
 
         it { should compile.with_all_deps }
+
+        it { should contain_class('reviewboard') }
 
         setcommand = "/foo/bar/bin/rb-site manage /opt/reviewboard/site set-siteconfig -- --key 'foo' --value 'bar'"
         getcommand = "/foo/bar/bin/rb-site manage /opt/reviewboard/site get-siteconfig -- --key 'foo' | grep '^bar$'"

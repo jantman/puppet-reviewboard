@@ -18,7 +18,8 @@ describe 'reviewboard::site::install', :type => :define do
             :adminpass  => 'bazblam',
             :adminemail => 'myuser@example.com',
             :cache      => 'memcached',
-            :cacheinfo  => 'localhost:11211'
+            :cacheinfo  => 'localhost:11211',
+            :venv_path  => '/opt/reviewboard',
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
         let :pre_condition do

@@ -21,12 +21,12 @@ define reviewboard::site::config (
   $site,
   $key,
   $value,
+  $venv_path,
 ) {
 
   exec {"rb-site ${site} set ${key}=${value}":
-    command => "rb-site manage ${site} set-siteconfig -- --key '${key}' --value '${value}'",
-    unless  => "rb-site manage ${site} get-siteconfig -- --key '${key}' | grep '^${value}$'",
-    path    => ['/bin','/usr/bin'],
+    command => "${venv_path}/bin/rb-site manage ${site} set-siteconfig -- --key '${key}' --value '${value}'",
+    unless  => "${venv_path}/bin/rb-site manage ${site} get-siteconfig -- --key '${key}' | grep '^${value}$'",
     require => Class['reviewboard::package'],
     notify  => Reviewboard::Provider::Web[$site],
   }

@@ -100,7 +100,7 @@ define reviewboard::site (
   include reviewboard
 
   validate_absolute_path($site)
-  
+
   if $dbpass == undef {
     fail('Postgres DB password not set')
   }
@@ -143,6 +143,7 @@ define reviewboard::site (
     cache      => $cache,
     cacheinfo  => $cacheinfo,
     require    => Reviewboard::Provider::Db[$site],
+    venv_path  => $reviewboard::venv_path,
   }
 
   # Set up the web server
