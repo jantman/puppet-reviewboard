@@ -247,7 +247,7 @@ DEPENDENCIES
   puppet-blacksmith
   puppet-lint (~> 1.0.0)
   puppet-syntax
-  puppetlabs_spec_helper (~> 0.4.0)
+  puppetlabs_spec_helper
   rake
   rspec-puppet!
   rspec_junit_formatter
