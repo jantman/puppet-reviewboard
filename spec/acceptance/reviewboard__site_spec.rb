@@ -46,6 +46,9 @@ describe 'reviewboard::site' do
         # run the code
         pp = <<-EOS.unindent
             #{pre}
+            class {'apache':
+              default_vhost => false,
+            }
             class {'reviewboard':
             }
             reviewboard::site { '/opt/reviewboard/site':
@@ -134,7 +137,10 @@ describe 'reviewboard::site' do
     end
     context 'application / HTTP' do
       pending 'request for / works' do
-        # check that a HTTP request for / gets 200
+        describe command('wget -O - http://localhost/') do
+          its(:exit_status) { should eq 0 }
+          its(:stdout) { should match /html/ }
+        end
       end
       pending 'posting a review' do
         # try to post a review
