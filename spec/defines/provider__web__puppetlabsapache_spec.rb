@@ -29,7 +29,10 @@ describe 'reviewboard::provider::web::puppetlabsapache', :type => :define do
 
         it { should compile.with_all_deps }
 
-        it { should contain_class('Apache::Mod::Wsgi') }
+        it { should contain_class('Apache::Mod::Wsgi') \
+               .with_wsgi_python_path('/opt/reviewboard/lib/python2.7/site-packages') \
+               .with_wsgi_python_home('/opt/empty_base_venv')
+        }
         it { should contain_class('Apache::Mod::Mime') }
 
         # these need to be ruby-ized (or, un-dsl-ized)
@@ -85,7 +88,7 @@ describe 'reviewboard::provider::web::puppetlabsapache', :type => :define do
                                                             }) }
 
       end
-      describe "with locatin /reviewboard on #{osfamily}" do
+      describe "with location /reviewboard on #{osfamily}" do
         let(:params) {{
             :vhost       => 'fqdn.example.com',
             :location    => '/reviewboard',

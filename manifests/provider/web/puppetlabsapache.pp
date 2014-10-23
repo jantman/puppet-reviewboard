@@ -27,7 +27,11 @@ define reviewboard::provider::web::puppetlabsapache (
 
   $site = $name
 
-  include apache::mod::wsgi
+  class {'apache::mod::wsgi':
+    wsgi_python_path => "${venv_path}/lib/python2.7/site-packages",
+    wsgi_python_home => $base_venv,
+  }
+
   include apache::mod::mime
 
   $error_documents = [{error_code => '500', document => '/errordocs/500.html'}]

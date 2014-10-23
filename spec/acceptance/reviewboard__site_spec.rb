@@ -136,7 +136,7 @@ describe 'reviewboard::site' do
       end
     end
     context 'application / HTTP' do
-      pending 'request for / works' do
+      describe 'request for / works' do
         describe command('wget -O - http://localhost/') do
           its(:exit_status) { should eq 0 }
           its(:stdout) { should match /html/ }
