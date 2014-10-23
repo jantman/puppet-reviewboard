@@ -30,7 +30,7 @@ describe 'reviewboard::traclink' do
       describe "notify web provider" do
         let(:params) {{ }}
         let(:pre_condition) { [ "class {'reviewboard': }",
-                                "reviewboard::provider::web {'/foo': vhost => 'foo', location => '/', webuser => 'bar'}",
+                                "reviewboard::provider::web {'/foo': vhost => 'foo', location => '/', webuser => 'bar', venv_path => '/opt/reviewboard', venv_python => '/usr/bin/python2.7', base_venv => '/opt/empty_base_venv', }",
                                 "package {'trac': }"] }
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 

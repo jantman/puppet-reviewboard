@@ -12,9 +12,12 @@ describe 'reviewboard::provider::web', :type => :define do
     ['RedHat'].each do |osfamily|
       describe "with default parameters on #{osfamily}" do
         let(:params) {{
-            :vhost    => 'fqdn.example.com',
-            :location => '/',
-            :webuser  => 'apache'
+            :vhost       => 'fqdn.example.com',
+            :location    => '/',
+            :webuser     => 'apache',
+            :venv_path   => '/opt/reviewboard',
+            :venv_python => '/usr/bin/python2.7',
+            :base_venv   => '/opt/empty_base_venv',
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
         let(:pre_condition) { "class {'reviewboard': }"}
@@ -22,8 +25,11 @@ describe 'reviewboard::provider::web', :type => :define do
         it { should compile.with_all_deps }
 
         it { should contain_reviewboard__provider__web__puppetlabsapache('/opt/reviewboard/site').with({
-                                                                                                         :vhost    => 'fqdn.example.com',
-                                                                                                         :location => '/'
+                                                                                                         :vhost       => 'fqdn.example.com',
+                                                                                                         :location    => '/',
+                                                                                                         :venv_path   => '/opt/reviewboard',
+                                                                                                         :venv_python => '/usr/bin/python2.7',
+                                                                                                         :base_venv   => '/opt/empty_base_venv',
                                                                                                        })
         }
 
@@ -51,7 +57,10 @@ describe 'reviewboard::provider::web', :type => :define do
         let(:params) {{
             :vhost    => 'fqdn.example.com',
             :location => '/',
-            :webuser  => 'apache'
+            :webuser  => 'apache',
+            :venv_path   => '/opt/reviewboard',
+            :venv_python => '/usr/bin/python2.7',
+            :base_venv   => '/opt/empty_base_venv',
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
         let(:pre_condition) { "class {'reviewboard': }"}
@@ -59,8 +68,11 @@ describe 'reviewboard::provider::web', :type => :define do
         it { should compile.with_all_deps }
 
         it { should contain_reviewboard__provider__web__puppetlabsapache('/otherpath').with({
-                                                                                              :vhost    => 'fqdn.example.com',
-                                                                                              :location => '/'
+                                                                                              :vhost       => 'fqdn.example.com',
+                                                                                              :location    => '/',
+                                                                                              :venv_path   => '/opt/reviewboard',
+                                                                                              :venv_python => '/usr/bin/python2.7',
+                                                                                              :base_venv   => '/opt/empty_base_venv',
                                                                                             })
         }
         it { should_not contain_reviewboard__provider__web__simple('/opt/reviewboard/site') }
@@ -88,7 +100,10 @@ describe 'reviewboard::provider::web', :type => :define do
         let(:params) {{
             :vhost    => 'fqdn.example.com',
             :location => '/',
-            :webuser  => 'apache'
+            :webuser  => 'apache',
+            :venv_path   => '/opt/reviewboard',
+            :venv_python => '/usr/bin/python2.7',
+            :base_venv   => '/opt/empty_base_venv',
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
         let(:pre_condition) { "class {'reviewboard': webprovider => 'simple'}"}
@@ -98,8 +113,11 @@ describe 'reviewboard::provider::web', :type => :define do
         it { should_not contain_reviewboard__provider__web__puppetlabsapache('/opt/reviewboard/site') }
 
         it { should contain_reviewboard__provider__web__simple('/opt/reviewboard/site').with({
-                                                                                               :vhost    => 'fqdn.example.com',
-                                                                                               :location => '/'
+                                                                                               :vhost       => 'fqdn.example.com',
+                                                                                               :location    => '/',
+                                                                                               :venv_path   => '/opt/reviewboard',
+                                                                                               :venv_python => '/usr/bin/python2.7',
+                                                                                               :base_venv   => '/opt/empty_base_venv',
                                                                                              })
         }
 
@@ -126,7 +144,10 @@ describe 'reviewboard::provider::web', :type => :define do
         let(:params) {{
             :vhost    => 'fqdn.example.com',
             :location => '/',
-            :webuser  => 'apache'
+            :webuser  => 'apache',
+            :venv_path   => '/opt/reviewboard',
+            :venv_python => '/usr/bin/python2.7',
+            :base_venv   => '/opt/empty_base_venv',
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
         let(:pre_condition) { "class {'reviewboard': webprovider => 'none'}"}
@@ -157,9 +178,12 @@ describe 'reviewboard::provider::web', :type => :define do
 
       describe "with 'invalid' webprovider on #{osfamily}" do
         let(:params) {{
-            :vhost    => 'fqdn.example.com',
-            :location => '/',
-            :webuser  => 'apache'
+            :vhost       => 'fqdn.example.com',
+            :location    => '/',
+            :webuser     => 'apache',
+            :venv_path   => '/opt/reviewboard',
+            :venv_python => '/usr/bin/python2.7',
+            :base_venv   => '/opt/empty_base_venv',
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
         let(:pre_condition) { "class {'reviewboard': webprovider => 'invalid'}"}

@@ -18,7 +18,9 @@
 
 # Setup for the 'simple' web provider
 class reviewboard::provider::web::simplepackage (
-
+  $venv_path,
+  $base_venv,
+  $venv_python,
 ) {
 
   package {'httpd':

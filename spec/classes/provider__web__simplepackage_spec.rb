@@ -11,7 +11,11 @@ describe 'reviewboard::provider::web::simplepackage' do
   context 'supported operating systems' do
     ['RedHat'].each do |osfamily|
       describe "reviewboard::provider::web::simplepackage class without any parameters on #{osfamily}" do
-        let(:params) {{ }}
+        let(:params) {{
+          :venv_path   => '/opt/reviewboard',
+          :base_venv   => '/opt/empty_base_venv',
+          :venv_python => '/usr/bin/python2.7',
+        }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
 
         it { should compile.with_all_deps }

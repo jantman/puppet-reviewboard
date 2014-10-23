@@ -46,10 +46,13 @@ describe 'reviewboard::site', :type => :define do
         }
 
         it { should contain_reviewboard__provider__web('/opt/reviewboard/site').with({
-                                                                          :vhost    => 'fqdn.example.com',
-                                                                          :location => '/',
-                                                                          :webuser  => nil,
-                                                                          :require  => 'Reviewboard::Site::Install[/opt/reviewboard/site]',
+                                                                          :vhost       => 'fqdn.example.com',
+                                                                          :location    => '/',
+                                                                          :webuser     => nil,
+                                                                          :venv_path   => '/opt/reviewboard',
+                                                                          :venv_python => '/usr/bin/python2.7',
+                                                                          :base_venv   => '/opt/empty_base_venv',
+                                                                          :require     => 'Reviewboard::Site::Install[/opt/reviewboard/site]',
                                                                           })
         }
 
@@ -65,10 +68,13 @@ describe 'reviewboard::site', :type => :define do
         it { should create_class('reviewboard') } # include
 
         it { should contain_reviewboard__provider__web('/opt/reviewboard/site').with({
-                                                                          :vhost    => 'fqdn.example.com',
-                                                                          :location => '/',
-                                                                          :webuser  => 'apache',
-                                                                          :require  => 'Reviewboard::Site::Install[/opt/reviewboard/site]',
+                                                                          :vhost       => 'fqdn.example.com',
+                                                                          :location    => '/',
+                                                                          :webuser     => 'apache',
+                                                                          :venv_path   => '/opt/reviewboard',
+                                                                          :venv_python => '/usr/bin/python2.7',
+                                                                          :base_venv   => '/opt/empty_base_venv',
+                                                                          :require     => 'Reviewboard::Site::Install[/opt/reviewboard/site]',
                                                                           })
         }
 
@@ -160,7 +166,10 @@ describe 'reviewboard::site', :type => :define do
       }
 
       it { should contain_reviewboard__provider__web('/opt/reviewboard/site').with({
-                                                                        :location => '/foo',
+                                                                        :location    => '/foo',
+                                                                        :venv_path   => '/opt/reviewboard',
+                                                                        :venv_python => '/usr/bin/python2.7',
+                                                                        :base_venv   => '/opt/empty_base_venv',
                                                                         })
       }
 

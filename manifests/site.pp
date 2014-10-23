@@ -148,10 +148,13 @@ define reviewboard::site (
 
   # Set up the web server
   reviewboard::provider::web {$site:
-    vhost    => $vhost,
-    location => $location,
-    webuser  => $webuser,
-    require  => Reviewboard::Site::Install[$site],
+    vhost       => $vhost,
+    location    => $location,
+    webuser     => $webuser,
+    venv_path   => $reviewboard::venv_path,
+    venv_python => $reviewboard::venv_python,
+    base_venv   => $reviewboard::base_venv,
+    require     => Reviewboard::Site::Install[$site],
   }
 
 }

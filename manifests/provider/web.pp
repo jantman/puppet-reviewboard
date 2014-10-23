@@ -21,14 +21,20 @@ define reviewboard::provider::web (
   $vhost,
   $location,
   $webuser,
+  $venv_path,
+  $base_venv,
+  $venv_python,
 ) {
 
   $site = $name
 
   if $reviewboard::webprovider == 'simple' {
     reviewboard::provider::web::simple {$site:
-      vhost    => $vhost,
-      location => $location,
+      vhost       => $vhost,
+      location    => $location,
+      venv_path   => $venv_path,
+      base_venv   => $base_venv,
+      venv_python => $venv_python,
     }
 
     $realwebuser = 'apache'
@@ -37,8 +43,11 @@ define reviewboard::provider::web (
   } elsif $reviewboard::webprovider == 'puppetlabs/apache' {
     include apache
     reviewboard::provider::web::puppetlabsapache {$site:
-      vhost    => $vhost,
-      location => $location,
+      vhost       => $vhost,
+      location    => $location,
+      venv_path   => $venv_path,
+      base_venv   => $base_venv,
+      venv_python => $venv_python,
     }
 
     $realwebuser = $apache::user

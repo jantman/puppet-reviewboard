@@ -17,7 +17,7 @@ describe 'reviewboard::site::config', :type => :define do
           <<-eos
           package {'python-pip': ensure => present, }
           class {'reviewboard': }
-          reviewboard::provider::web {'/opt/reviewboard/site': vhost => 'foo', location => '/', webuser => 'apache' }
+          reviewboard::provider::web {'/opt/reviewboard/site': vhost => 'foo', location => '/', webuser => 'apache', venv_path => '/opt/reviewboard', venv_python => '/usr/bin/python2.7', base_venv => '/opt/empty_base_venv', }
           eos
         end
 
@@ -49,7 +49,7 @@ describe 'reviewboard::site::config', :type => :define do
           class {'reviewboard':
             venv_path => '/foo/bar',
           }
-          reviewboard::provider::web {'/opt/reviewboard/site': vhost => 'foo', location => '/', webuser => 'apache' }
+          reviewboard::provider::web {'/opt/reviewboard/site': vhost => 'foo', location => '/', webuser => 'apache', venv_path => '/foo/bar', venv_python => '/usr/bin/python2.7', base_venv => '/opt/empty_base_venv', }
           eos
         end
 

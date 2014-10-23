@@ -11,8 +11,11 @@ describe 'reviewboard::provider::web::puppetlabsapache', :type => :define do
     ['RedHat'].each do |osfamily|
       describe "with example parameters and location / on #{osfamily}" do
         let(:params) {{
-            :vhost    => 'fqdn.example.com',
-            :location => '/',
+            :vhost       => 'fqdn.example.com',
+            :location    => '/',
+            :venv_path   => '/opt/reviewboard',
+            :venv_python => '/usr/bin/python2.7',
+            :base_venv   => '/opt/empty_base_venv',
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
         let :pre_condition do
@@ -84,8 +87,11 @@ describe 'reviewboard::provider::web::puppetlabsapache', :type => :define do
       end
       describe "with locatin /reviewboard on #{osfamily}" do
         let(:params) {{
-            :vhost    => 'fqdn.example.com',
-            :location => '/reviewboard',
+            :vhost       => 'fqdn.example.com',
+            :location    => '/reviewboard',
+            :venv_path   => '/opt/reviewboard',
+            :venv_python => '/usr/bin/python2.7',
+            :base_venv   => '/opt/empty_base_venv',
         }}
         let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
         let :pre_condition do

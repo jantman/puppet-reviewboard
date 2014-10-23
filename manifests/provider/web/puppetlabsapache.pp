@@ -20,6 +20,9 @@
 define reviewboard::provider::web::puppetlabsapache (
   $vhost,
   $location,
+  $venv_path,
+  $base_venv,
+  $venv_python,
 ) {
 
   $site = $name
