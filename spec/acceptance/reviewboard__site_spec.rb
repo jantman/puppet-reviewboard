@@ -66,5 +66,54 @@ describe 'reviewboard::site' do
       end
     end
 
+    describe 'site configuration' do
+      describe file('/opt/reviewboard/site/conf/settings_local.py') do
+        it { should be_file }
+        it { should be_owned_by 'apache' }
+        it { should be_grouped_into 'root' }
+        it { should be_mode '600' }
+        # DB config
+        its(:content) { should match /'ENGINE': 'django.db.backends.postgresql_psycopg2'/ }
+        its(:content) { should match /'NAME': 'reviewboard',/ }
+        its(:content) { should match /'USER': 'reviewboard',/ }
+        its(:content) { should match /'PASSWORD': 'rbdbpass',/ }
+        its(:content) { should match /'HOST': 'localhost',/ }
+        # cache config
+        its(:content) { should match /'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',/ }
+        its(:content) { should match /'LOCATION': 'localhost:11211',/ }
+        its(:content) { should match /SITE_ROOT = '\/'/ }
+        its(:content) { should match /DEBUG = False/ }
+      end
+    end
+
+    describe 'upload directories' do
+      describe file('/opt/reviewboard/site/data') do
+        it { should be_directory }
+        it { should be_owned_by 'apache' }
+        it { should be_mode '755' }
+      end
+
+      describe file('/opt/reviewboard/site/htdocs/media/uploaded') do
+        it { should be_directory }
+        it { should be_owned_by 'apache' }
+        it { should be_mode '755' }
+      end
+    end
+
+    describe 'media' do
+      describe file('/opt/reviewboard/site/htdocs/static/rb/js/admin.js') do
+        it { should be_file }
+      end
+    end
+
+    describe 'apache running' do
+      describe service('httpd') do
+        it { should be_enabled }
+        it { should be_running }
+      end
+      describe port(80) do
+        it { should be_listening }
+      end
+    end
   end
 end
