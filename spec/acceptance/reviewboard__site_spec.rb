@@ -35,6 +35,7 @@ describe 'reviewboard::site' do
         # cleanup
         shell('rm -Rf /opt/reviewboard /opt/empty_base_venv /opt/otherrbvenv /tmp/thirdrbvenv /tmp/fourthrbvenv /tmp/basevenv')
         shell('yum -y install python-virtualenv')
+        shell('su -l -c \'echo "DROP DATABASE IF EXISTS reviewboard;" | psql\' postgres')
 
         apply_manifest(pre, :catch_failures => true)
       end
@@ -60,59 +61,87 @@ describe 'reviewboard::site' do
       end
     end
 
-    describe 'site directory is created' do
-      describe file('/opt/reviewboard/site') do
-        it { should be_directory }
+    context 'site on disk' do
+      describe 'directory is created' do
+        describe file('/opt/reviewboard/site') do
+          it { should be_directory }
+        end
+      end
+
+      describe 'configuration' do
+        describe file('/opt/reviewboard/site/conf/settings_local.py') do
+          it { should be_file }
+          it { should be_owned_by 'apache' }
+          it { should be_grouped_into 'root' }
+          it { should be_mode '600' }
+          # DB config
+          its(:content) { should match /'ENGINE': 'django.db.backends.postgresql_psycopg2'/ }
+          its(:content) { should match /'NAME': 'reviewboard',/ }
+          its(:content) { should match /'USER': 'reviewboard',/ }
+          its(:content) { should match /'PASSWORD': 'rbdbpass',/ }
+          its(:content) { should match /'HOST': 'localhost',/ }
+          # cache config
+          its(:content) { should match /'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',/ }
+          its(:content) { should match /'LOCATION': 'localhost:11211',/ }
+          its(:content) { should match /SITE_ROOT = '\/'/ }
+          its(:content) { should match /DEBUG = False/ }
+        end
+      end
+
+      describe 'upload directories' do
+        describe file('/opt/reviewboard/site/data') do
+          it { should be_directory }
+          it { should be_owned_by 'apache' }
+          it { should be_mode '755' }
+        end
+
+        describe file('/opt/reviewboard/site/htdocs/media/uploaded') do
+          it { should be_directory }
+          it { should be_owned_by 'apache' }
+          it { should be_mode '755' }
+        end
+      end
+
+      describe 'media' do
+        describe file('/opt/reviewboard/site/htdocs/static/rb/js/admin.js') do
+          it { should be_file }
+        end
       end
     end
 
-    describe 'site configuration' do
-      describe file('/opt/reviewboard/site/conf/settings_local.py') do
-        it { should be_file }
-        it { should be_owned_by 'apache' }
-        it { should be_grouped_into 'root' }
-        it { should be_mode '600' }
-        # DB config
-        its(:content) { should match /'ENGINE': 'django.db.backends.postgresql_psycopg2'/ }
-        its(:content) { should match /'NAME': 'reviewboard',/ }
-        its(:content) { should match /'USER': 'reviewboard',/ }
-        its(:content) { should match /'PASSWORD': 'rbdbpass',/ }
-        its(:content) { should match /'HOST': 'localhost',/ }
-        # cache config
-        its(:content) { should match /'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',/ }
-        its(:content) { should match /'LOCATION': 'localhost:11211',/ }
-        its(:content) { should match /SITE_ROOT = '\/'/ }
-        its(:content) { should match /DEBUG = False/ }
-      end
-    end
-
-    describe 'upload directories' do
-      describe file('/opt/reviewboard/site/data') do
-        it { should be_directory }
-        it { should be_owned_by 'apache' }
-        it { should be_mode '755' }
-      end
-
-      describe file('/opt/reviewboard/site/htdocs/media/uploaded') do
-        it { should be_directory }
-        it { should be_owned_by 'apache' }
-        it { should be_mode '755' }
-      end
-    end
-
-    describe 'media' do
-      describe file('/opt/reviewboard/site/htdocs/static/rb/js/admin.js') do
-        it { should be_file }
-      end
-    end
-
-    describe 'apache running' do
+    describe 'apache' do
       describe service('httpd') do
         it { should be_enabled }
         it { should be_running }
       end
       describe port(80) do
         it { should be_listening }
+      end
+    end
+
+    context 'database' do
+      pending 'exists' do
+        # check that the DB exists / user can access it
+      end
+      pending 'tables exist' do
+        # check that a correct table exists in the DB
+      end
+    end
+    context 'application / HTTP' do
+      pending 'request for / works' do
+        # check that a HTTP request for / gets 200
+      end
+      pending 'posting a review' do
+        # try to post a review
+      end
+      pending 'viewing a review' do
+        # try to view the review
+      end
+      pending 'commenting on a review' do
+        # try to comment on a review
+      end
+      pending 'uploading a file' do
+        # try to upload a file
       end
     end
   end
