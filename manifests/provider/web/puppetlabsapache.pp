@@ -27,6 +27,10 @@ define reviewboard::provider::web::puppetlabsapache (
 
   $site = $name
 
+  # TODO
+  # if we're not using system python, we need
+  # to install the correct alternate wsgi package, and
+  # manage this file manually
   class {'apache::mod::wsgi':
     wsgi_python_path => "${venv_path}/lib/python2.7/site-packages",
     wsgi_python_home => $base_venv,

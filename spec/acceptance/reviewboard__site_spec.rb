@@ -120,6 +120,13 @@ describe 'reviewboard::site' do
       describe port(80) do
         it { should be_listening }
       end
+      describe 'mod_wsgi configuration' do
+        describe file('/etc/httpd/conf.d/wsgi.conf') do
+          it { should be_file }
+          its(:content) { should match %r"WSGIPythonPath \"/opt/reviewboard/lib/python2.7/site-packages\"" }
+          its(:content) { should match %r"WSGIPythonHome \"/opt/empty_base_venv\"" }
+        end
+      end
     end
 
     context 'database' do
