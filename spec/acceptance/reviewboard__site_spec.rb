@@ -121,10 +121,15 @@ describe 'reviewboard::site' do
 
     context 'database' do
       pending 'exists' do
-        # check that the DB exists / user can access it
+        describe command('su -l -c \'echo "SELECT 1;" | psql -d reviewboard\' postgres') do
+          its(:exit_status) { should eq 0 }
+        end
       end
       pending 'tables exist' do
-        # check that a correct table exists in the DB
+        describe command('su -l -c \'echo "SELECT username FROM auth_user WHERE id=1;" | psql -d reviewboard\' postgres') do
+          its(:exit_status) { should eq 0 }
+          its(:stdout) { should match /admin/ }
+        end
       end
     end
     context 'application / HTTP' do
