@@ -62,7 +62,7 @@ define reviewboard::site::install(
   exec {"rb-site install ${name}":
     require => Class[reviewboard::package],
     command => "${venv_path}/bin/rb-site install ${site} ${argstr}",
-    creates => $site,
+    creates => "${site}/conf/settings_local.py",
   }
 
 }

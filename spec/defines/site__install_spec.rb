@@ -51,7 +51,7 @@ describe 'reviewboard::site::install', :type => :define do
         it { should contain_exec('rb-site install /opt/reviewboard/site').with({
                                                                                  :command => command,
                                                                                  :require => 'Class[Reviewboard::Package]',
-                                                                                 :creates => '/opt/reviewboard/site',
+                                                                                 :creates => '/opt/reviewboard/site/conf/settings_local.py',
                                                                                })
         }
       end
