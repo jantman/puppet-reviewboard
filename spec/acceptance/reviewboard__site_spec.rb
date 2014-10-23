@@ -5,6 +5,9 @@ describe 'reviewboard::site' do
     # prereqs
     pre = <<-EOS.unindent
         class {'python::python27':}
+        class {'postgresql::globals':
+          version => '9.3',
+        }
         class {'postgresql::server':
           version              => '9.3',
           initdb_path          => '/usr/pgsql-9.3/bin/initdb',
