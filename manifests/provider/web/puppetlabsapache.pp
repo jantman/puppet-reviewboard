@@ -29,13 +29,35 @@ define reviewboard::provider::web::puppetlabsapache (
 
   $site = $name
 
-  # TODO
-  # if we're not using system python, we need
-  # to install the correct alternate wsgi package, and
-  # manage this file manually
-  class {'apache::mod::wsgi':
-    wsgi_python_path => "${venv_path}/lib/python2.7/site-packages",
-    wsgi_python_home => $base_venv,
+  if $mod_wsgi_package_name == undef {
+    class {'apache::mod::wsgi':
+      wsgi_python_path => "${venv_path}/lib/python2.7/site-packages",
+      wsgi_python_home => $base_venv,
+    }
+  } else {
+    # TODO: until https://tickets.puppetlabs.com/browse/MODULES-1458 is closed
+    $mod_path = "${::apache::params::lib_path}/${mod_wsgi_so_name}"
+
+    ::apache::mod { 'wsgi':
+      package => $mod_wsgi_package_name,
+      path    => $mod_path,
+    }
+
+    $wsgi_python_path = "${venv_path}/lib/python2.7/site-packages"
+    $wsgi_python_home = $base_venv
+    $wsgi_socket_prefix = $::apache::params::wsgi_socket_prefix
+    # Template uses:
+    # - $wsgi_socket_prefix
+    # - $wsgi_python_path
+    # - $wsgi_python_home
+    file {'wsgi.conf':
+      ensure  => file,
+      path    => "${::apache::mod_dir}/wsgi.conf",
+      content => template('apache/mod/wsgi.conf.erb'),
+      require => Exec["mkdir ${::apache::mod_dir}"],
+      before  => File[$::apache::mod_dir],
+      notify  => Service['httpd']
+    }
   }
 
   include apache::mod::mime
