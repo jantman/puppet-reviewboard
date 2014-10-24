@@ -64,6 +64,12 @@ describe 'reviewboard::site' do
         apply_manifest(pp, :catch_failures => true)
         expect(apply_manifest(pp, :catch_changes => true).exit_code).to be_zero
       end
+      # enable debug so we get more helpful diff output for HTTP errors
+      describe 'enable django debug' do
+        describe command('sed -i "s/DEBUG = False/DEBUG = True/" /opt/reviewboard/site/conf/settings_local.py && service httpd restart') do
+          its(:exit_status) { should eq 0 }
+        end
+      end
     end
 
     context 'site on disk' do
@@ -89,7 +95,6 @@ describe 'reviewboard::site' do
           its(:content) { should match /'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',/ }
           its(:content) { should match /'LOCATION': 'localhost:11211',/ }
           its(:content) { should match /SITE_ROOT = '\/'/ }
-          its(:content) { should match /DEBUG = False/ }
         end
       end
 
