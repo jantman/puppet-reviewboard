@@ -49,6 +49,8 @@ describe 'reviewboard::package' do
 
         it { should contain_package('gettext') }
 
+        it { should contain_package('patch') }
+
         build_reqs = ['# puppet-managed - reviewboard::package class',
                        '# because of pip issues, these have to be installed before ReviewBoard',
                        'Django>=1.6.7,<1.7',

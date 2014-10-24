@@ -85,8 +85,16 @@ class reviewboard::package (
   }
 
   # this is needed by djblets for i18n
-  package {'gettext':
-    ensure => present,
+  if ! defined(Package['gettext']) {
+    package {'gettext':
+      ensure => present,
+    }
+  }
+
+  if ! defined(Package['patch']) {
+    package {'patch':
+      ensure => present,
+    }
   }
 
   if $::osfamily == 'RedHat' {
