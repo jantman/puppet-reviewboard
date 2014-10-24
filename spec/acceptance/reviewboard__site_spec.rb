@@ -50,6 +50,8 @@ describe 'reviewboard::site' do
               default_vhost => false,
             }
             class {'reviewboard':
+              mod_wsgi_package_name => 'python27-mod_wsgi',
+              mod_wsgi_so_name      => 'python27-mod_wsgi.so',
             }
             reviewboard::site { '/opt/reviewboard/site':
               dbpass     => 'rbdbpass',
@@ -126,6 +128,13 @@ describe 'reviewboard::site' do
           its(:content) { should match %r"WSGIPythonPath \"/opt/reviewboard/lib/python2.7/site-packages\"" }
           its(:content) { should match %r"WSGIPythonHome \"/opt/empty_base_venv\"" }
         end
+        describe file('/etc/httpd/conf.d/wsgi.load') do
+          it { should be_file }
+          its(:content) { should match %r"LoadModule wsgi_module modules/python27-mod_wsgi.so" }
+        end
+        describe package('python27-mod_wsgi') do
+          it { should be_installed }
+        end
       end
     end
 
@@ -161,6 +170,11 @@ describe 'reviewboard::site' do
       pending 'uploading a file' do
         # try to upload a file
       end
+    end
+  end
+  context 'with system python' do
+    pending 'use system python' do
+      # need to try this
     end
   end
 end
