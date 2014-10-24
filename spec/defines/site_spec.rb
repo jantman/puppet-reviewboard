@@ -210,5 +210,8 @@ describe 'reviewboard::site', :type => :define do
       }
 
     end
+    pending 'system python' do
+      # need to test with system/default python
+    end
   end
 end
