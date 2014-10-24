@@ -23,6 +23,8 @@ define reviewboard::provider::web::puppetlabsapache (
   $venv_path,
   $base_venv,
   $venv_python,
+  $mod_wsgi_package_name = undef,
+  $mod_wsgi_so_name      = undef,
 ) {
 
   $site = $name

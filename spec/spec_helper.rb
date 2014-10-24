@@ -22,11 +22,27 @@ class SpecHelperFacts
   def initialize(hash={})
     # default facts
     @facts = {
-      :osfamily          => 'RedHat',
-      :virtualenv27_path => '/usr/bin/virtualenv-2.7',
-      :python27_path     => '/usr/bin/python2.7',
-      :concat_basedir    => '/var/lib/puppet/concat',
-      :fqdn              => 'fqdn.example.com'
+      :concat_basedir             => '/var/lib/puppet/concat',
+      :fqdn                       => 'fqdn.example.com',
+      :osfamily                   => 'RedHat',
+      :python26_path              => '/usr/bin/python2.6',
+      :python27_path              => '/usr/bin/python2.7',
+      :python_default_bin         => '/usr/bin/python',
+      :python_default_version     => '2.6.6',
+      :python_latest_path         => '/usr/bin/python2.7',
+      :python_latest_version      => '2.7.8',
+      :python_usrbin_version      => '2.6.6',
+      :python_versions            => ["2.6.6", "2.7.8"],
+      :python_versions_str        => '2.6.6,2.7.8',
+      :virtualenv26_path          => '/usr/bin/virtualenv-2.6',
+      :virtualenv27_path          => '/usr/bin/virtualenv-2.7',
+      :virtualenv_default_bin     => '/usr/bin/virtualenv',
+      :virtualenv_default_version => '1.10.1',
+      :virtualenv_latest_path     => '/usr/bin/virtualenv-2.7',
+      :virtualenv_latest_version  => '1.11.6',
+      :virtualenv_usrbin_version  => '1.10.1',
+      :virtualenv_versions        => ["1.10.1", "1.11.6"],
+      :virtualenv_versions_str    => '1.10.1,1.11.6',
     }
     # override or append specified values
     hash.each do |k, v|

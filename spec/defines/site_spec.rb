@@ -46,13 +46,15 @@ describe 'reviewboard::site', :type => :define do
         }
 
         it { should contain_reviewboard__provider__web('/opt/reviewboard/site').with({
-                                                                          :vhost       => 'fqdn.example.com',
-                                                                          :location    => '/',
-                                                                          :webuser     => nil,
-                                                                          :venv_path   => '/opt/reviewboard',
-                                                                          :venv_python => '/usr/bin/python2.7',
-                                                                          :base_venv   => '/opt/empty_base_venv',
-                                                                          :require     => 'Reviewboard::Site::Install[/opt/reviewboard/site]',
+                                                                          :vhost            => 'fqdn.example.com',
+                                                                          :location         => '/',
+                                                                          :webuser          => nil,
+                                                                          :venv_path        => '/opt/reviewboard',
+                                                                          :venv_python      => '/usr/bin/python2.7',
+                                                                          :base_venv        => '/opt/empty_base_venv',
+                                                                          :mod_wsgi_package => nil,
+                                                                          :mod_wsgi_so_name => nil,
+                                                                          :require          => 'Reviewboard::Site::Install[/opt/reviewboard/site]',
                                                                           })
         }
 
@@ -75,6 +77,40 @@ describe 'reviewboard::site', :type => :define do
                                                                           :venv_python => '/usr/bin/python2.7',
                                                                           :base_venv   => '/opt/empty_base_venv',
                                                                           :require     => 'Reviewboard::Site::Install[/opt/reviewboard/site]',
+                                                                          })
+        }
+
+      end
+      describe "define with specified python and mod_wsgi on #{osfamily}" do
+        let(:params) {{
+            :dbpass     => 'foo',
+            :adminpass  => 'bar',
+        }}
+	let(:facts) { SpecHelperFacts.new({:osfamily => osfamily}).facts }
+        let :pre_condition do
+          <<-eos
+          class {'reviewboard':
+            webuser               => 'apache',
+            venv_python           => '/usr/bin/python3.3',
+            virtualenv_script     => '/usr/bin/virtualenv3.3',
+            mod_wsgi_package_name => 'python33-mod_wsgi',
+            mod_wsgi_so_name      => 'python33-mod_wsgi',
+          }
+          eos
+        end
+
+        it { should create_class('reviewboard') } # include
+
+        it { should contain_reviewboard__provider__web('/opt/reviewboard/site').with({
+                                                                          :vhost                 => 'fqdn.example.com',
+                                                                          :location              => '/',
+                                                                          :webuser               => 'apache',
+                                                                          :venv_path             => '/opt/reviewboard',
+                                                                          :base_venv             => '/opt/empty_base_venv',
+                                                                          :venv_python           => '/usr/bin/python3.3',
+                                                                          :mod_wsgi_package_name => 'python33-mod_wsgi',
+                                                                          :mod_wsgi_so_name      => 'python33-mod_wsgi',
+                                                                          :require               => 'Reviewboard::Site::Install[/opt/reviewboard/site]',
                                                                           })
         }
 

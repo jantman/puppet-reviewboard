@@ -44,6 +44,18 @@
 #   to use for the reviewboard venv per the mod_wsgi docs.
 #   (default: '/opt/empty_base_venv')
 #
+# [*mod_wsgi_package_name*]
+#   (string) if not undefined, the name of an alternate (non-system-default)
+#   package to install for mod_wsgi (i.e. for an alternate python version).
+#   Specific to puppetlabs/apache web provider.
+#   (default: undef - use the default package)
+#
+# [*mod_wsgi_so_name*]
+#   (string) if not undefined, the name of the .so file that mod_wsgi_package_name
+#   provides, and to load.
+#   Specific to puppetlabs/apache web provider.
+#   (default: undef)
+#
 # == Authors
 #
 # Scott Wales <scott.wales@unimelb.edu.au>
@@ -65,15 +77,17 @@
 #  limitations under the License.
 #
 class reviewboard (
-  $version           = undef,
-  $webprovider       = 'puppetlabs/apache',
-  $webuser           = undef,
-  $dbprovider        = 'puppetlabs/postgresql',
-  $dbtype            = 'postgresql',
-  $venv_path         = '/opt/reviewboard',
-  $venv_python       = $::python27_path,
-  $virtualenv_script = $::virtualenv27_path,
-  $base_venv         = '/opt/empty_base_venv',
+  $version               = undef,
+  $webprovider           = 'puppetlabs/apache',
+  $webuser               = undef,
+  $dbprovider            = 'puppetlabs/postgresql',
+  $dbtype                = 'postgresql',
+  $venv_path             = '/opt/reviewboard',
+  $venv_python           = $::python27_path,
+  $virtualenv_script     = $::virtualenv27_path,
+  $base_venv             = '/opt/empty_base_venv',
+  $mod_wsgi_package_name = undef,
+  $mod_wsgi_so_name      = undef,
 ) {
 
   validate_absolute_path($venv_path)
