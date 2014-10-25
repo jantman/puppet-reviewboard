@@ -194,7 +194,8 @@ describe 'reviewboard::site' do
         EOS
 
         # Apply twice to ensure no errors the second time.
-        apply_manifest(tests, :catch_failures => true)        
+        apply_manifest(tests, :catch_failures => true)
+        shell('rm -f /root/.rbtools-cookies')
       end
       describe 'request for / works' do
         describe command('wget -O - http://localhost/') do
@@ -202,10 +203,15 @@ describe 'reviewboard::site' do
           its(:stdout) { should match /html/ }
         end
       end
-      pending 'logging in' do
-        # this seems to require supporting cookies from within JS :(
-        #"curl 'http://localhost/account/login/' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' -H 'Accept-Encoding: gzip, deflate' -H 'Accept-Language: en-US,en;q=0.5' -H 'Connection: keep-alive' -H 'Cookie: csrftoken=O1U3SEwFvfMijY1Te2Z57KRex4hsOiU0' -H 'Host: 127.0.0.1:8088' -H 'Pragma: akamai-x-cache-on, akamai-x-cache-remote-on, akamai-x-check-cacheable, akamai-x-get-cache-key, akamai-x-get-extracted-values, akamai-x-get-nonces, akamai-x-get-ssl-client-session-id, akamai-x-get-true-cache-key, akamai-x-serial-no' -H 'Referer: http://127.0.0.1:8088/account/login/?next=/r/' -H 'User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:28.0) Gecko/20100101 Firefox/28.0' -H 'Content-Type: application/x-www-form-urlencoded' --data 'next=%2Fr%2F&csrfmiddlewaretoken=O1U3SEwFvfMijY1Te2Z57KRex4hsOiU0&username=admin&password=rbadminpass'"
-        #"curl 'http://localhost/account/login/' -H 'Content-Type: application/x-www-form-urlencoded' --data 'next=%2Fr%2F&csrfmiddlewaretoken=O1U3SEwFvfMijY1Te2Z57KRex4hsOiU0&username=admin&password=rbadminpass'"
+      describe 'logging in' do
+        describe command('/tmp/rbtest/bin/python /tmp/rb_test.py -a login') do
+          its(:exit_status) { should eq 0 }
+          its(:stdout) { should match /payload={u'stat': u'ok'/ }
+        end
+      end
+      pending 'adding a repository' do
+        # add /tmp/puppet-reviewboard repo
+        # TODO - need to install git
       end
       pending 'posting a review' do
         # try to post a review
