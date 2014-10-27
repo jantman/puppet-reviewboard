@@ -1,3 +1,4 @@
+# this spec MUST run first
 require 'spec_helper_acceptance'
 
 describe 'reviewboard' do
@@ -7,12 +8,36 @@ describe 'reviewboard' do
       shell('rm -Rf /opt/reviewboard /opt/empty_base_venv /opt/otherrbvenv /tmp/thirdrbvenv /tmp/fourthrbvenv /tmp/basevenv')
 
       # prerequisites
-      pp = <<-EOS.unindent
-          class {'python::python27':}
+      pre = <<-EOS.unindent
+        class {'python::python27':}
+        class {'postgresql::globals':
+          version => '9.3',
+        }
+        class {'postgresql::server':
+          version              => '9.3',
+          initdb_path          => '/usr/pgsql-9.3/bin/initdb',
+          package_name         => 'postgresql93-server',
+          service_name         => 'postgresql-9.3',
+          needs_initdb         => true,
+          pg_hba_conf_path     => '/var/lib/pgsql/9.3/data/pg_hba.conf',
+          datadir              => '/var/lib/pgsql/9.3/data',
+          postgresql_conf_path => '/var/lib/pgsql/9.3/data/postgresql.conf',
+          manage_firewall      => false,
+        }
+        class {'postgresql::client':
+          package_name => 'postgresql93',
+        }
+        class {'postgresql::repo':
+          version => '9.3',
+        }
+        class {'postgresql::lib::devel':
+          package_name => 'postgresql93-devel',
+        }
       EOS
-      apply_manifest(pp, :catch_failures => true)
+      apply_manifest(pre, :catch_failures => true)
 
       pp = <<-EOS.unindent
+          #{pre}
           class {'reviewboard':}
       EOS
 
