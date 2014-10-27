@@ -193,6 +193,8 @@ describe 'reviewboard::site' do
         EOS
 
         # Apply twice to ensure no errors the second time.
+        # TODO: this seems to be causing a strange failure, where it runs before
+        # the fixtures are SCP'ed in by spec_helper_acceptance
         #apply_manifest(tests, :catch_failures => true)
         shell('rm -f /root/.rbtools-cookies')
       end
