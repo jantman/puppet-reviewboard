@@ -12,7 +12,7 @@ describe 'reviewboard' do
         class {'python::python27':}
         class {'postgresql::globals':
           version => '9.3',
-        } ->
+        }
         class {'postgresql::repo':
           version => '9.3',
         } ->
@@ -26,10 +26,10 @@ describe 'reviewboard' do
           datadir              => '/var/lib/pgsql/9.3/data',
           postgresql_conf_path => '/var/lib/pgsql/9.3/data/postgresql.conf',
           manage_firewall      => false,
-        } ->
+        }
         class {'postgresql::client':
           package_name => 'postgresql93',
-        } ->
+        }
         class {'postgresql::lib::devel':
           package_name => 'postgresql93-devel',
         }
