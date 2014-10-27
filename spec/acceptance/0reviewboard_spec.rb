@@ -25,7 +25,6 @@ describe 'reviewboard' do
           pg_hba_conf_path     => '/var/lib/pgsql/9.3/data/pg_hba.conf',
           datadir              => '/var/lib/pgsql/9.3/data',
           postgresql_conf_path => '/var/lib/pgsql/9.3/data/postgresql.conf',
-          manage_firewall      => false,
         }
         class {'postgresql::client':
           package_name => 'postgresql93',
