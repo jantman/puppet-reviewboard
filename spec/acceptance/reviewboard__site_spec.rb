@@ -194,7 +194,7 @@ describe 'reviewboard::site' do
         EOS
 
         # Apply twice to ensure no errors the second time.
-        apply_manifest(tests, :catch_failures => true)
+        #apply_manifest(tests, :catch_failures => true)
         shell('rm -f /root/.rbtools-cookies')
       end
       describe 'request for / works' do
