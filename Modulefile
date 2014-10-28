@@ -12,7 +12,7 @@ END
 
 dependency 'puppetlabs/stdlib', '>=2.2.1 <5.0.0'
 dependency 'puppetlabs/apache'
-dependency 'puppetlabs/concat', '1.1.1'
+dependency 'puppetlabs/concat', '>=1.1.1 <2.0.0'
 dependency 'puppetlabs/postgresql', '>= 4.0.0 <5.0.0'
 dependency 'coxmediagroup/virtualenv', '>=0.1.0 <2.0.0'
 dependency 'coxmediagroup/python', '>=0.0.6 <1.0.0'
