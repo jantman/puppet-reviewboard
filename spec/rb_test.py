@@ -33,6 +33,13 @@ def create_repo(root):
 def main(action, user='admin', password='rbadminpass'):
     root = get_api_root(user, password)
     if action == 'login':
+        if root._payload['stat'] != 'ok':
+            logger.error("login failed - payload stat not ok")
+            return False
+        if not root:
+            logger.error("login failed")
+            return False
+        logger.info("login succeeded")
         return True
     elif action == 'createrepo':
         create_repo(root)
@@ -66,4 +73,7 @@ if __name__ == "__main__":
     elif opts.verbose > 0:
         logger.setLevel(logging.INFO)
 
-    main(opts.action, user=opts.username, password=opts.password)
+    res = main(opts.action, user=opts.username, password=opts.password)
+    if not res:
+        raise SystemExit("tests failed")
+

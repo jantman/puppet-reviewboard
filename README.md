@@ -33,6 +33,9 @@ Additionally the following optional prerequisites may be installed:
 package provider on your OS; they are installed via [puppetlabs-nodejs](https://forge.puppetlabs.com/puppetlabs/nodejs).
 On RedHat derivative systems, this generally means enabling EPEL.
 
+**Note** the postgresql module needs a functional Augeas provider, which no longer seems to
+be a safe assumption with any given Puppet installation.
+
 Usage
 -----
 

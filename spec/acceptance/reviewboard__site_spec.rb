@@ -168,7 +168,7 @@ describe 'reviewboard::site' do
 
     context 'application tests' do
       describe 'test prerequisites' do
-        tests = <<-EOS.unindent
+        test_prereq = <<-EOS.unindent
           python_virtualenv {'/tmp/rbtest': 
             ensure     => present,
             python     => $::python_latest_path,
@@ -192,11 +192,10 @@ describe 'reviewboard::site' do
           }
         EOS
 
-        # Apply twice to ensure no errors the second time.
-        # TODO: this seems to be causing a strange failure, where it runs before
-        # the fixtures are SCP'ed in by spec_helper_acceptance
-        #apply_manifest(tests, :catch_failures => true)
-        shell('rm -f /root/.rbtools-cookies')
+        it 'installs them' do
+          apply_manifest(test_prereq, :catch_failures => true)
+          shell('rm -f /root/.rbtools-cookies')
+        end
       end
       describe 'request for / works' do
         describe command('wget -O - http://localhost/') do
@@ -207,7 +206,6 @@ describe 'reviewboard::site' do
       describe 'logging in' do
         describe command('/tmp/rbtest/bin/python /tmp/rb_test.py -a login') do
           its(:exit_status) { should eq 0 }
-          its(:stdout) { should match /payload={u'stat': u'ok'/ }
         end
       end
       pending 'adding a repository' do

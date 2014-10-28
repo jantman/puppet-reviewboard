@@ -44,6 +44,8 @@ hosts.each do |host|
     on host, 'gem list puppet | grep -q puppet && gem uninstall puppet --all || /bin/true'
     # TODO: having issues with facts from fixture modules and 3.7's directory environments; force 3.6.2 for now
     on host, 'gem install puppet -v 3.6.2 --no-ri --no-rdoc'
+    on host, 'yum -y install ruby-devel augeas augeas-devel'
+    on host, 'gem install ruby-augeas --no-ri --no-rdoc'
     on host, "mkdir -p #{host['distmoduledir']}"
   end
   if host['platform'] =~ /el/
@@ -72,7 +74,7 @@ RSpec.configure do |c|
       scp_to host, File.join(proj_root), '/etc/puppet/modules/reviewboard', :ignore => ['.bundle', '.git', '.idea', '.vagrant', '.vendor', 'acceptance', 'spec', 'tests', 'log']
       # for acceptance tests (reviewboard::site)
       scp_to host, File.join(proj_root), '/tmp/puppet-reviewboard', :ignore => ['.bundle', 'acceptance', 'spec', 'tests', 'log']
-      scp_to host, File.join(proj_root, 'spec', 'rb_test.py'), '/tmp/rb_test.py', :ignore => []
+      scp_to host, File.join(proj_root, 'spec', 'rb_test.py'), '/tmp/rb_test.py', :ignore => ['foobarbazblam'] # empty ignore seems to trigger defaults
       # install fixture modules
       ['stdlib', 'apache', 'concat', 'postgresql', 'virtualenv', 'python', 'yum', 'nodejs'].each do |m|
         puts "installing module from fixtures/: #{m}"
