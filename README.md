@@ -36,6 +36,9 @@ On RedHat derivative systems, this generally means enabling EPEL.
 **Note** the postgresql module needs a functional Augeas provider, which no longer seems to
 be a safe assumption with any given Puppet installation.
 
+**Note** ReviewBoard 2.x doesn't seem to support Python < 2.7, as djblets.extensions.staticfiles
+attempts to import ``importlib``.
+
 Usage
 -----
 
