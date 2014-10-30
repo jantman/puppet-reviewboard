@@ -72,6 +72,8 @@ RSpec.configure do |c|
       puts "installing module 'reviewboard' from project root #{proj_root}"
       # having issues with puppet_module_install and deep directories - i.e. manifests/provider/db
       scp_to host, proj_root, '/etc/puppet/modules/reviewboard', :ignore => ['.bundle', '.git', '.idea', '.vagrant', '.vendor', 'acceptance', 'spec', 'tests', 'log']
+      # for functional tests
+      scp_to host, File.join(proj_root, 'spec', 'rb_test.py'), '/tmp/rb_test.py', :ignore => ['ignorenothing'] # empty ignore seems to trigger defaults
       # install fixture modules
       ['stdlib', 'apache', 'concat', 'postgresql', 'virtualenv', 'python', 'yum', 'nodejs'].each do |m|
         puts "installing module from fixtures/: #{m}"
