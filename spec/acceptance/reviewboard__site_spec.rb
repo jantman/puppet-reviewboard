@@ -196,11 +196,35 @@ describe 'reviewboard::site' do
             options       => ['--allow-unverified', 'RBTools'],
             require       => Python_virtualenv['/tmp/rbtest'],
           }
+
+          python_package {'/tmp/rbtest,requests':
+            ensure        => present,
+            python_prefix => '/tmp/rbtest',
+            requirements  => 'requests',
+            require       => Python_virtualenv['/tmp/rbtest'],
+          }
+
+          python_package {'/tmp/rbtest,python-memcached':
+            ensure        => present,
+            python_prefix => '/tmp/rbtest',
+            requirements  => 'python-memcached',
+            require       => Python_virtualenv['/tmp/rbtest'],
+          }
         EOS
 
         it 'installs them' do
           apply_manifest(test_prereq, :catch_failures => true)
-          shell('rm -f /root/.rbtools-cookies')
+        end
+        # remove any existing cookies
+        describe command('rm -f /root/.rbtools-cookies') do
+          its(:exit_status) { should eq 0 }
+        end
+        # enable logging
+        describe command("/opt/reviewboard/bin/rb-site manage /opt/reviewboard/site set-siteconfig -- --key 'logging_enabled' --value 1") do
+          its(:exit_status) { should eq 0 }
+        end
+        describe command("/opt/reviewboard/bin/rb-site manage /opt/reviewboard/site set-siteconfig -- --key 'logging_directory' --value '/opt/reviewboard/site/logs'"
+          its(:exit_status) { should eq 0 }
         end
       end
       describe 'request for / works' do
@@ -214,27 +238,48 @@ describe 'reviewboard::site' do
           its(:exit_status) { should eq 0 }
         end
       end
-      pending 'adding a repository' do
+      describe 'adding a repository' do
         describe command('/tmp/rbtest/bin/python /tmp/rb_test.py -a createrepo') do
           its(:exit_status) { should eq 0 }
         end
       end
-      pending 'posting a review' do
-        # try to post a review
+      describe 'posting a review' do
+        describe command('/tmp/rbtest/bin/python /tmp/rb_test.py -a post') do
+          its(:exit_status) { should eq 0 }
+        end
       end
-      pending 'viewing a review' do
-        # try to view the review
+      describe 'viewing a review' do
+        describe command('wget -O - http://localhost/r/') do
+          its(:exit_status) { should eq 0 }
+          its(:stdout) { should match /test_commit/ }
+        end
       end
-      pending 'commenting on a review' do
-        # try to comment on a review
+      describe 'uploading a file' do
+        describe command('/tmp/rbtest/bin/python /tmp/rb_test.py -a attach') do
+          its(:exit_status) { should eq 0 }
+        end
       end
-      pending 'uploading a file' do
-        # try to upload a file
+      describe 'diff viewer' do
+        describe command('/tmp/rbtest/bin/python /tmp/rb_test.py -a diffview') do
+          its(:exit_status) { should eq 0 }
+        end
+        describe command('which patch') do
+          its(:exit_status) { should eq 0 }
+        end
       end
     end
     context 'memcached' do
-      pending 'writes to memcache' do
-        # test this
+      describe service('memcached') do
+        it { should be_enabled }
+        it { should be_running }
+      end
+      describe port(11211) do
+        it { should be_listening }
+      end                 
+      describe 'writes to memcache' do
+        describe command('/tmp/rbtest/bin/python /tmp/rb_test.py -a memcached') do
+          its(:exit_status) { should eq 0 }
+        end
       end
     end
   end
