@@ -223,7 +223,7 @@ describe 'reviewboard::site' do
         describe command("/opt/reviewboard/bin/rb-site manage /opt/reviewboard/site set-siteconfig -- --key 'logging_enabled' --value 1") do
           its(:exit_status) { should eq 0 }
         end
-        describe command("/opt/reviewboard/bin/rb-site manage /opt/reviewboard/site set-siteconfig -- --key 'logging_directory' --value '/opt/reviewboard/site/logs'"
+        describe command("/opt/reviewboard/bin/rb-site manage /opt/reviewboard/site set-siteconfig -- --key 'logging_directory' --value '/opt/reviewboard/site/logs'") do
           its(:exit_status) { should eq 0 }
         end
       end
