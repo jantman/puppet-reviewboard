@@ -97,6 +97,12 @@ class reviewboard::package (
     }
   }
 
+  if ! defined(Package['git']) {
+    package {'git':
+      ensure => present,
+    }
+  }
+
   if $::osfamily == 'RedHat' {
     # this is in EPEL. The `npm` install seems broken on Cent6. So use the OS package.
     package {'uglifyjs':
