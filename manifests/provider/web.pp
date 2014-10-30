@@ -79,7 +79,7 @@ define reviewboard::provider::web (
   }
 
   # Set web folder ownership
-  file {["${site}/data", "${site}/htdocs/media", "${site}/htdocs/media/ext"]:
+  file {["${site}/data", "${site}/htdocs/media", "${site}/htdocs/media/ext", "${site}/logs"]:
     ensure  => directory,
     owner   => $realwebuser,
     notify  => $webservice,
