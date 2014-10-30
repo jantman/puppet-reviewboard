@@ -39,6 +39,12 @@ be a safe assumption with any given Puppet installation.
 **Note** ReviewBoard 2.x doesn't seem to support Python < 2.7, as djblets.extensions.staticfiles
 attempts to import ``importlib``.
 
+**Note** This module requires puppetlabs-postgresql >= 4.0.0. This is because puppetlabs-apache
+requires puppetlabs-concat >= 1.1.1, but there is a bug in older versions of puppetlabs-postgresql
+when used with the newer (>= 1.0.0) versions of concat.
+
+**TODO** - DO NOT SHIP - need full examples of how to use this, along with all dependencies.
+
 Usage
 -----
 
