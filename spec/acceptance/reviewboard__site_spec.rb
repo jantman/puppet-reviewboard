@@ -105,6 +105,12 @@ describe 'reviewboard::site' do
           it { should be_mode '755' }
         end
 
+        describe file('/opt/reviewboard/site/logs') do
+          it { should be_directory }
+          it { should be_owned_by 'apache' }
+          it { should be_mode '755' }
+        end
+
         describe file('/opt/reviewboard/site/htdocs/media/uploaded') do
           it { should be_directory }
           it { should be_owned_by 'apache' }
@@ -209,8 +215,9 @@ describe 'reviewboard::site' do
         end
       end
       pending 'adding a repository' do
-        # add /tmp/puppet-reviewboard repo
-        # TODO - need to install git
+        describe command('/tmp/rbtest/bin/python /tmp/rb_test.py -a createrepo') do
+          its(:exit_status) { should eq 0 }
+        end
       end
       pending 'posting a review' do
         # try to post a review
@@ -223,6 +230,11 @@ describe 'reviewboard::site' do
       end
       pending 'uploading a file' do
         # try to upload a file
+      end
+    end
+    context 'memcached' do
+      pending 'writes to memcache' do
+        # test this
       end
     end
   end
