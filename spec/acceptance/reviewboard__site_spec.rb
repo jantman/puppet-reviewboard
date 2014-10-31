@@ -219,13 +219,6 @@ describe 'reviewboard::site' do
         describe command('rm -f /root/.rbtools-cookies') do
           its(:exit_status) { should eq 0 }
         end
-        # enable logging
-        describe command("/opt/reviewboard/bin/rb-site manage /opt/reviewboard/site set-siteconfig -- --key 'logging_enabled' --value 1") do
-          its(:exit_status) { should eq 0 }
-        end
-        describe command("/opt/reviewboard/bin/rb-site manage /opt/reviewboard/site set-siteconfig -- --key 'logging_directory' --value '/opt/reviewboard/site/logs'") do
-          its(:exit_status) { should eq 0 }
-        end
       end
       describe 'request for / works' do
         describe command('wget -O - http://localhost/') do
