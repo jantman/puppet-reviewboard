@@ -3,56 +3,104 @@ Puppet Reviewboard
 
 Manage an install of [Reviewboard](http://www.reviewboard.org)
 
-To install include the package 'reviewboard' in your manifest
+To install include the class 'reviewboard' in your manifest
 
 Optionally you can install the RBtool package for submitting reviews by
 including 'reviewboard::rbtool'
 
-**Note** this module now only supports ReviewBoard 2.x.
+**Note** this branch currently relies on a module, coxmediagroup/virtualenv,
+that is not yet available to the public. We're working on fixing that.
+
+**WARNING** - ToDo - update all examples/params in docs.
 
 Pre-Requisites
 --------------
 
-**Note** this branch currently relies on a module, coxmediagroup/virtualenv,
-that is not yet available to the public. We're working on fixing that.
-
-Also, note any TODO comments. Currently, I haven't written spec or acceptance
-tests for db or web providers other than the default two.
-
 The modules available are listed below in the 'Usage' section, pull requests to
 support other providers are welcome.
+
+Required Prerequisites (required by the module, but you need to handle them yourself):
+
+  * You must have 'nodejs' and 'npm' packages available via your default OS package
+    installation method, as they will be installed by [puppetlabs-nodejs](https://forge.puppetlabs.com/puppetlabs/nodejs);
+    on RedHat-based systems, this generally means you need EPEL enabled.
+  * You need to have Augeas working for the postgresql module; on RedHat this seems to
+    require the 'ruby-devel', 'augeas' and 'augeas-devel' packages and the 'ruby-augeas' gem.
+  * This module requires puppetlabs-postgresql >= 4.0.0. This is because puppetlabs-apache
+    requires puppetlabs-concat >= 1.1.1, but there is a bug in older versions of puppetlabs-postgresql
+    when used with the newer (>= 1.0.0) versions of concat.
+  * With default parameters, you need to have Python 2.7 installed.
+  * The default values for the python and virtualenv versions come from facts in the coxmediagroup/python
+    module, which is not yet released publicly.
 
 Additionally the following optional prerequisites may be installed:
 
  * memcached & python-memcached for website caching
  * python bindings for your database (if not installed by the dbprovider)
 
-**Note** That the database providers do not support anything other than 'localhost'.
+Limitations
+-----------
 
-**Note** This module requires "nodejs" and "npm" packages to be available via the default
-package provider on your OS; they are installed via [puppetlabs-nodejs](https://forge.puppetlabs.com/puppetlabs/nodejs).
-On RedHat derivative systems, this generally means enabling EPEL.
-
-**Note** the postgresql module needs a functional Augeas provider, which no longer seems to
-be a safe assumption with any given Puppet installation.
-
-**Note** ReviewBoard 2.x doesn't seem to support Python < 2.7, as djblets.extensions.staticfiles
-attempts to import ``importlib``.
-
-**Note** This module requires puppetlabs-postgresql >= 4.0.0. This is because puppetlabs-apache
-requires puppetlabs-concat >= 1.1.1, but there is a bug in older versions of puppetlabs-postgresql
-when used with the newer (>= 1.0.0) versions of concat.
-
-**TODO** - DO NOT SHIP - need full examples of how to use this, along with all dependencies.
+* This module now only supports ReviewBoard 2.x.
+* That the database providers do not support anything other than 'localhost'.
+* ReviewBoard 2.x doesn't seem to support Python < 2.7, as djblets.extensions.staticfiles
+  attempts to import ``importlib``.
 
 Usage
 -----
 
+Example of prerequisites:
+
+    class {'python::python27':}
+    class {'postgresql::globals':
+      version => '9.3',
+    }
+    class {'postgresql::repo':
+      version => '9.3',
+    } ->
+    class {'postgresql::server':
+      version              => '9.3',
+      initdb_path          => '/usr/pgsql-9.3/bin/initdb',
+      package_name         => 'postgresql93-server',
+      service_name         => 'postgresql-9.3',
+      needs_initdb         => true,
+      pg_hba_conf_path     => '/var/lib/pgsql/9.3/data/pg_hba.conf',
+      datadir              => '/var/lib/pgsql/9.3/data',
+      postgresql_conf_path => '/var/lib/pgsql/9.3/data/postgresql.conf',
+    }
+    class {'postgresql::client':
+      package_name => 'postgresql93',
+    }
+    class {'postgresql::lib::devel':
+      package_name => 'postgresql93-devel',
+    }
+    class {'apache':
+	  default_vhost => false,
+	}
+    class {'memcached':
+	}
+
+Install ReviewBoard itself:
+
+    class {'reviewboard':
+    }
+
+Create a "default" reviewboard site - based at '/opt/reviewboard/site' and available at ${::fqdn}/ :
+
+    reviewboard::site {'/opt/reviewboard/site':
+      dbpass     => 'dbpassword',
+	  adminpass  => 'adminpassword',
+	  adminemail => 'root@example.com',
+    }
+
 Create a reviewboard site based at '/var/www/reviewboard', available at ${::fqdn}/reviewboard:
 
     reviewboard::site {'/var/www/reviewboard':
-        vhost    => "${::fqdn}",
-        location => '/reviewboard'
+      vhost      => "${::fqdn}",
+      location   => '/reviewboard'
+      dbpass     => 'dbpassword',
+	  adminpass  => 'adminpassword',
+	  adminemail => 'root@example.com',
     }
 
 Setup LDAP Authentication for the site, authenticating against ``ldap://foo.example.com:389``
