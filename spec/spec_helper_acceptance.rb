@@ -2,6 +2,7 @@
 
 require 'beaker-rspec/spec_helper'
 require 'beaker-rspec/helpers/serverspec'
+require 'yaml'
 
 class String
   # Provide ability to remove indentation from strings, for the purpose of
@@ -72,14 +73,17 @@ RSpec.configure do |c|
       puts "installing module 'reviewboard' from project root #{proj_root}"
       # having issues with puppet_module_install and deep directories - i.e. manifests/provider/db
       scp_to host, proj_root, '/etc/puppet/modules/reviewboard', :ignore => ['.bundle', '.git', '.idea', '.vagrant', '.vendor', 'acceptance', 'spec', 'tests', 'log']
-      # for functional tests
+      puts "installing rb_test.py to /tmp/ for functional tests"
       scp_to host, File.join(proj_root, 'spec', 'rb_test.py'), '/tmp/rb_test.py', :ignore => ['ignorenothing'] # empty ignore seems to trigger defaults
       # install fixture modules
-      ['stdlib', 'apache', 'concat', 'postgresql', 'virtualenv', 'python', 'yum', 'nodejs', 'memcached'].each do |m|
-        puts "installing module from fixtures/: #{m}"
-        scp_to host, File.join(proj_root, 'spec', 'fixtures', 'modules', m), File.join('/etc/puppet/modules', m)
+      fixturemods = YAML.load_file(File.join(proj_root, '.fixtures.yml'))
+      fixturemods["fixtures"]["repositories"].each do |r|
+        modname = r[0]
+        puts "installing module from fixtures/: #{modname}"
+        scp_to host, File.join(proj_root, 'spec', 'fixtures', 'modules', modname), File.join('/etc/puppet/modules', modname)
       end
       # facts in modules (plugins-in-modules)
+      puts "setting up Facter facts from modules..."
       on host, shell('mkdir -p /var/lib/puppet/lib/facter/')
       on host, shell('find /etc/puppet/modules/*/lib/facter -iname "*.rb" -exec cp {} /var/lib/puppet/lib/facter/ \;')
       # boilerplate
