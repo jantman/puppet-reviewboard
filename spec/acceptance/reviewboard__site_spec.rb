@@ -210,6 +210,10 @@ describe 'reviewboard::site' do
             requirements  => 'python-memcached',
             require       => Python_virtualenv['/tmp/rbtest'],
           }
+
+          class {'memcached':
+            max_memory => '10%',
+          }
         EOS
 
         it 'installs them' do

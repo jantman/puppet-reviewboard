@@ -75,7 +75,7 @@ RSpec.configure do |c|
       # for functional tests
       scp_to host, File.join(proj_root, 'spec', 'rb_test.py'), '/tmp/rb_test.py', :ignore => ['ignorenothing'] # empty ignore seems to trigger defaults
       # install fixture modules
-      ['stdlib', 'apache', 'concat', 'postgresql', 'virtualenv', 'python', 'yum', 'nodejs'].each do |m|
+      ['stdlib', 'apache', 'concat', 'postgresql', 'virtualenv', 'python', 'yum', 'nodejs', 'memcached'].each do |m|
         puts "installing module from fixtures/: #{m}"
         scp_to host, File.join(proj_root, 'spec', 'fixtures', 'modules', m), File.join('/etc/puppet/modules', m)
       end

@@ -12,7 +12,7 @@ fixtures:
     postgresql:
       repo: "https://github.com/puppetlabs/puppetlabs-postgresql.git"
       ref: "4.0.0"
-    mysql: "git://github.com/puppetlabs/puppetlabs-mysql.git"
     nodejs: "git://github.com/puppetlabs/puppetlabs-nodejs.git"
+    memcached: "https://github.com/saz/puppet-memcached.git"
   symlinks:
     reviewboard: "#{source_dir}"
