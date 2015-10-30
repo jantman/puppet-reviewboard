@@ -1,46 +1,67 @@
-require 'serverspec'
-require 'pathname'
-require 'net/ssh'
-
-include SpecInfra::Helper::Ssh
-include SpecInfra::Helper::DetectOS
+require 'puppetlabs_spec_helper/module_spec_helper'
 
 RSpec.configure do |c|
-  if ENV['ASK_SUDO_PASSWORD']
-    require 'highline/import'
-    c.sudo_password = ask("Enter sudo password: ") { |q| q.echo = false }
-  else
-    c.sudo_password = ENV['SUDO_PASSWORD']
+  c.before do
+    # avoid "Only root can execute commands as other users"
+    Puppet.features.stubs(:root? => true)
   end
-  c.before :all do
-    block = self.class.metadata[:example_group_block]
-    if RUBY_VERSION.start_with?('1.8')
-      file = block.to_s.match(/.*@(.*):[0-9]+>/)[1]
-    else
-      file = block.source_location.first
+end
+
+class Undef
+  def inspect
+    'undef'
+  end
+end
+
+# this is used to provide a common set of facts usable by all tests,
+# while allowing us to pass in some specific facts if we need them
+# see: http://stackoverflow.com/a/18938866/211734
+class SpecHelperFacts
+  attr_accessor :facts
+
+  def initialize(hash={})
+    # default facts
+    @facts = {
+      :concat_basedir             => '/var/lib/puppet/concat',
+      :fqdn                       => 'fqdn.example.com',
+      :osfamily                   => 'RedHat',
+      :python26_path              => '/usr/bin/python2.6',
+      :python27_path              => '/usr/bin/python2.7',
+      :python_default_bin         => '/usr/bin/python',
+      :python_default_version     => '2.6.6',
+      :python_latest_path         => '/usr/bin/python2.7',
+      :python_latest_version      => '2.7.8',
+      :python_usrbin_version      => '2.6.6',
+      :python_versions            => ["2.6.6", "2.7.8"],
+      :python_versions_str        => '2.6.6,2.7.8',
+      :virtualenv26_path          => '/usr/bin/virtualenv-2.6',
+      :virtualenv27_path          => '/usr/bin/virtualenv-2.7',
+      :virtualenv_default_bin     => '/usr/bin/virtualenv',
+      :virtualenv_default_version => '1.10.1',
+      :virtualenv_latest_path     => '/usr/bin/virtualenv-2.7',
+      :virtualenv_latest_version  => '1.11.6',
+      :virtualenv_usrbin_version  => '1.10.1',
+      :virtualenv_versions        => ["1.10.1", "1.11.6"],
+      :virtualenv_versions_str    => '1.10.1,1.11.6',
+    }
+    # override or append specified values
+    hash.each do |k, v|
+      @facts[k] = v
     end
-    host  = File.basename(Pathname.new(file).dirname)
-    if c.host != host
-      c.ssh.close if c.ssh
-      c.host  = host
-      options = Net::SSH::Config.for(c.host)
-      user    = options[:user] || Etc.getlogin
-      vagrant_up = `vagrant up default`
-      config = `vagrant ssh-config default`
-      if config != ''
-        config.each_line do |line|
-          if match = /HostName (.*)/.match(line)
-            host = match[1]
-          elsif  match = /User (.*)/.match(line)
-            user = match[1]
-          elsif match = /IdentityFile (.*)/.match(line)
-            options[:keys] =  [match[1].gsub(/"/,'')]
-          elsif match = /Port (.*)/.match(line)
-            options[:port] = match[1]
-          end
-        end
-      end
-      c.ssh   = Net::SSH.start(host, user, options)
+    
+    # per-osfamily defaults
+    if @facts[:osfamily] == 'RedHat'
+      @facts[:operatingsystem] = 'CentOS'
+      @facts[:operatingsystemmajrelease] = '6'
+      @facts[:operatingsystemrelease] = '6.5'
     end
+  end
+
+  def [](key)
+    facts[key]
+  end
+
+  def []=(key, value)
+    facts[key] = value
   end
 end

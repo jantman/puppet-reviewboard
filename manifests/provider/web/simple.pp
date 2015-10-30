@@ -24,11 +24,18 @@
 define reviewboard::provider::web::simple (
   $vhost,
   $location,
+  $venv_path,
+  $base_venv,
+  $venv_python,
 ) {
 
   $site = $name
 
-  include reviewboard::provider::web::simplepackage
+  class {'reviewboard::provider::web::simplepackage':
+    venv_path   => $venv_path,
+    venv_python => $venv_python,
+    base_venv   => $base_venv,
+  }
 
   # Install apache config file
   file {"/etc/httpd/conf.d/${vhost}.conf":

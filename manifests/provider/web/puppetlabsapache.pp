@@ -20,21 +20,58 @@
 define reviewboard::provider::web::puppetlabsapache (
   $vhost,
   $location,
+  $venv_path,
+  $base_venv,
+  $venv_python,
+  $mod_wsgi_package_name = undef,
+  $mod_wsgi_so_name      = undef,
 ) {
 
   $site = $name
 
-  include apache::mod::wsgi
+  if $mod_wsgi_package_name == undef {
+    class {'apache::mod::wsgi':
+      wsgi_python_path => "${venv_path}/lib/python2.7/site-packages",
+      wsgi_python_home => $base_venv,
+    }
+  } else {
+    # TODO: until https://tickets.puppetlabs.com/browse/MODULES-1458 is closed
+    $mod_path = "${::apache::params::lib_path}/${mod_wsgi_so_name}"
+
+    ::apache::mod { 'wsgi':
+      package => $mod_wsgi_package_name,
+      path    => $mod_path,
+    }
+
+    $wsgi_python_path = "${venv_path}/lib/python2.7/site-packages"
+    $wsgi_python_home = $base_venv
+    $wsgi_socket_prefix = $::apache::params::wsgi_socket_prefix
+    # Template uses:
+    # - $wsgi_socket_prefix
+    # - $wsgi_python_path
+    # - $wsgi_python_home
+    file {'wsgi.conf':
+      ensure  => file,
+      path    => "${::apache::mod_dir}/wsgi.conf",
+      content => template('apache/mod/wsgi.conf.erb'),
+      require => Exec["mkdir ${::apache::mod_dir}"],
+      before  => File[$::apache::mod_dir],
+      notify  => Service['httpd']
+    }
+  }
+
   include apache::mod::mime
 
   $error_documents = [{error_code => '500', document => '/errordocs/500.html'}]
   if ($location == '/') {
     $locationfragment = ''
   } else {
-    $locationfragment = "${location}"
+    $locationfragment = $location
   }
 
+  # lint:ignore:only_variable_string - this is a hack to make a var work as a hash key
   $script_aliases  = {"${location}" => "${site}/htdocs/reviewboard.wsgi${locationfragment}"}
+  # lint:endignore
 
   $directories = [
     {path   => "${site}/htdocs",

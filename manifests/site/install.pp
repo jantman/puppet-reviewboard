@@ -31,9 +31,14 @@ define reviewboard::site::install(
   $adminemail,
   $cache,
   $cacheinfo,
+  $venv_path,
 ) {
 
   $site = $name
+  case $location { # A trailing slash is required
+    /\/$/:   { $normalized_location = $location}
+    default: { $normalized_location = "${location}/" }
+  }
 
   $args = [
     '--noinput',
@@ -56,9 +61,8 @@ define reviewboard::site::install(
 
   exec {"rb-site install ${name}":
     require => Class[reviewboard::package],
-    command => "rb-site install ${site} ${argstr}",
-    path    => '/usr/bin',
-    creates => $site,
+    command => "${venv_path}/bin/rb-site install ${site} ${argstr}",
+    creates => "${site}/conf/settings_local.py",
   }
 
 }

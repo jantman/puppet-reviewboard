@@ -21,14 +21,30 @@ define reviewboard::provider::web (
   $vhost,
   $location,
   $webuser,
+  $venv_path,
+  $base_venv,
+  $venv_python,
+  $mod_wsgi_package_name = undef,
+  $mod_wsgi_so_name      = undef,
 ) {
 
   $site = $name
+
+  if (($mod_wsgi_package_name == undef and $mod_wsgi_so_name != undef) or ($mod_wsgi_so_name == undef and $mod_wsgi_package_name != undef)) {
+    fail('mod_wsgi_package_name and mod_wsgi_so_name must be specified together')
+  }
+
+  if ( $mod_wsgi_package_name and $reviewboard::webprovider != 'puppetlabs/apache') {
+    fail('mod_wsgi_package_name and mod_wsgi_so_name are only supported with puppetlabs/apache webprovider')
+  }
 
   if $reviewboard::webprovider == 'simple' {
     reviewboard::provider::web::simple {$site:
       vhost       => $vhost,
       location    => $location,
+      venv_path   => $venv_path,
+      base_venv   => $base_venv,
+      venv_python => $venv_python,
     }
 
     $realwebuser = 'apache'
@@ -37,8 +53,13 @@ define reviewboard::provider::web (
   } elsif $reviewboard::webprovider == 'puppetlabs/apache' {
     include apache
     reviewboard::provider::web::puppetlabsapache {$site:
-      vhost       => $vhost,
-      location    => $location,
+      vhost                 => $vhost,
+      location              => $location,
+      venv_path             => $venv_path,
+      base_venv             => $base_venv,
+      venv_python           => $venv_python,
+      mod_wsgi_package_name => $mod_wsgi_package_name,
+      mod_wsgi_so_name      => $mod_wsgi_so_name,
     }
 
     $realwebuser = $apache::user
@@ -54,11 +75,11 @@ define reviewboard::provider::web (
     $webservice  = undef
 
   } else {
-    err("Web provider '${reviewboard::webprovider}' not defined")
+    fail("Web provider '${reviewboard::webprovider}' not defined")
   }
 
   # Set web folder ownership
-  file {["${site}/data", "${site}/htdocs/media", "${site}/htdocs/media/ext"]:
+  file {["${site}/data", "${site}/htdocs/media", "${site}/htdocs/media/ext", "${site}/logs"]:
     ensure  => directory,
     owner   => $realwebuser,
     notify  => $webservice,

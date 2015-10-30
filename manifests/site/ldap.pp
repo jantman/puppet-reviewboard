@@ -30,9 +30,12 @@ define reviewboard::site::ldap (
 ) {
   warning('LDAP configuration not presently working in tests')
 
+  include reviewboard
+
   Reviewboard::Site::Config {
-    site    => $site,
-    require => Reviewboard::Site::Install[$site],
+    site      => $site,
+    require   => Reviewboard::Site::Install[$site],
+    venv_path => $reviewboard::venv_path,
   }
 
   reviewboard::site::config {"${site} ldap enable":

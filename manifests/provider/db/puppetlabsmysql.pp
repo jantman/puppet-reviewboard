@@ -1,4 +1,4 @@
-## \file    provider/web/simplepackage.pp
+## \file    manifests/provider/db/puppetlabsmysql.pp
 #  \author  Scott Wales <scott.wales@unimelb.edu.au>
 #  \brief
 #
@@ -16,34 +16,30 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-# Setup for the 'simple' web provider
-class reviewboard::provider::web::simplepackage (
-  $venv_path,
-  $base_venv,
-  $venv_python,
+# Sets up the site DB using puppetlabs/mysql
+define reviewboard::provider::db::puppetlabsmysql (
+  $dbuser,
+  $dbpass,
+  $dbname,
+  $dbhost = 'localhost',
 ) {
 
-  package {'httpd':
-    ensure => present,
+  if $dbhost != 'localhost' {
+    err('Remote db hosts not implemented')
   }
 
-  service {'httpd':
-    ensure  => running,
-    enable  => true,
-    require => Package['httpd'],
+  class { '::mysql::bindings':
+    python_enable => true,
   }
 
-  file {'/etc/httpd/conf.d':
-    ensure  => directory,
-    recurse => true,
-    purge   => true,
-    require => Package['httpd'],
+  class { '::mysql::server':
+    root_password    => $dbpass,
   }
 
-  file {'/etc/httpd/conf.d/mod_wsgi.conf':
-    ensure  => present,
-    content => 'LoadModule wsgi_module modules/mod_wsgi.so',
-    notify  => Service['httpd'],
+  ::mysql::db { $dbname:
+    user     => $dbuser,
+    password => $dbpass,
+    host     => $dbhost,
   }
 
 }

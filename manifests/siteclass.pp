@@ -1,28 +1,14 @@
-#  \file    manifests/site.pp
-#  \author  Scott Wales <scott.wales@unimelb.edu.au>
-#  \brief
+# == Class: reviewboard::siteclass
 #
-#  Copyright 2014 Scott Wales
-#
-#  Licensed under the Apache License, Version 2.0 (the "License");
-#  you may not use this file except in compliance with the License.
-#  You may obtain a copy of the License at
-#
-#      http://www.apache.org/licenses/LICENSE-2.0
-#
-#  Unless required by applicable law or agreed to in writing, software
-#  distributed under the License is distributed on an "AS IS" BASIS,
-#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-#  See the License for the specific language governing permissions and
-#  limitations under the License.
-
-# Set up a reviewboard site
+# Wrapper class around reviewboard::site define, for users who
+# only have one RB site/vhost but want to use it with an ENC or
+# Hiera.
 #
 # === Parameters
 #
-# [*site (namevar)*]
+# [*sitename*]
 #   (string) The location where the site will be created on disk
-#   Default: $name
+#   Default: '${reviewboard::venv_path}/site'
 #
 # [*vhost*]
 #   (string) The ServerName of the apache vhost.
@@ -80,9 +66,30 @@
 #   and web root / htdocs.
 #   Default: $reviewboard::webuser
 #
+# === Authors
 #
-define reviewboard::site (
-  $site       = $name,
+#  Jason Antman <jason@jasonantman.com>
+#
+# === Copyright
+#
+#  Copyright 2014 Jason Antman
+#
+# === License
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+class reviewboard::siteclass (
+  $sitename   = "${reviewboard::venv_path}/site",
   $vhost      = $::fqdn,
   $location   = '/',
   $dbtype     = 'postgresql',
@@ -99,39 +106,10 @@ define reviewboard::site (
 ) {
   include reviewboard
 
-  validate_absolute_path($site)
-
-  if $dbpass == undef {
-    fail('Postgres DB password not set')
-  }
-  if $adminpass == undef {
-    fail('Admin password not set')
-  }
-  if $adminemail == "@${::fqdn}" {
-    fail('reviewboard::webuser must be explicitly set if adminemail is not.')
-  }
-
-  if $location != '/' and $reviewboard::webprovider == 'puppetlabs/apache' {
-    fail('Due to a bug in puppet allowing only hashes keyed by string literals (not variables), the puppetlabs/apache web provider only works when location is /')
-  }
-
-  # Create the database
-  reviewboard::provider::db {$site:
-    dbuser => $dbuser,
-    dbpass => $dbpass,
-    dbname => $dbname,
-    dbhost => $dbhost,
-  }
-
-  case $location { # A trailing slash is required
-    /\/$/:   { $normalized_location = $location}
-    default: { $normalized_location = "${location}/" }
-  }
-
-  # Run site-install
-  reviewboard::site::install {$site:
+  # wrap the define
+  reviewboard::site { $sitename:
     vhost      => $vhost,
-    location   => $normalized_location,
+    location   => $location,
     dbtype     => $dbtype,
     dbname     => $dbname,
     dbhost     => $dbhost,
@@ -142,21 +120,7 @@ define reviewboard::site (
     adminemail => $adminemail,
     cache      => $cache,
     cacheinfo  => $cacheinfo,
-    require    => Reviewboard::Provider::Db[$site],
-    venv_path  => $reviewboard::venv_path,
-  }
-
-  # Set up the web server
-  reviewboard::provider::web {$site:
-    vhost                 => $vhost,
-    location              => $location,
-    webuser               => $webuser,
-    venv_path             => $reviewboard::venv_path,
-    venv_python           => $reviewboard::venv_python,
-    base_venv             => $reviewboard::base_venv,
-    mod_wsgi_package_name => $reviewboard::mod_wsgi_package_name,
-    mod_wsgi_so_name      => $reviewboard::mod_wsgi_so_name,
-    require               => Reviewboard::Site::Install[$site],
+    webuser    => $webuser,
   }
 
 }
