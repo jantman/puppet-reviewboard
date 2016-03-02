@@ -22,7 +22,7 @@ logging.basicConfig(level=logging.INFO, format=FORMAT)
 logger = logging.getLogger(__name__)
 
 clone_path = '/tmp/puppet-reviewboard'
-github_url = 'https://github.com/jantman/puppet-reviewboard.git'
+github_url = 'https://github.com/thebaron/puppet-reviewboard.git'
 
 def get_api_root(user, password):
     client = RBClient('http://localhost/', username=user, password=password)

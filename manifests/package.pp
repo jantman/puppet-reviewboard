@@ -62,27 +62,23 @@ class reviewboard::package (
 
   # empty base venv, per http://code.google.com/p/modwsgi/wiki/VirtualEnvironments
   # this will be the WSGIPythonHome setting
-  python_virtualenv {$base_venv:
-    ensure     => present,
-    virtualenv => $virtualenv_script,
-    python     => $venv_python,
+  python::virtualenv { $base_venv :
+    ensure       => present,
+    version      => 'system',
+    systempkgs   => true,
+    venv_dir     => $base_venv,
+    timeout      => 0,
   }
 
-  python_virtualenv {$venv_path:
-    ensure     => present,
-    virtualenv => $virtualenv_script,
-    python     => $venv_python,
-    require    => Python_virtualenv[$base_venv],
+python::virtualenv { $venv_path :
+    ensure       => present,
+    version      => 'system',
+    systempkgs   => true,
+    venv_dir     => $venv_path,
+    timeout      => 0,
+    require      => Python::Virtualenv[$base_venv],
   }
 
-  # make sure we have an acceptably new pip
-  python_package {"${venv_path},pip>=1.5.1":
-    ensure => present,
-    python_prefix => $venv_path,
-    requirements  => 'pip>=1.5.1',
-    options       => '--upgrade',
-    require       => Python_virtualenv[$venv_path],
-  }
 
   # this is needed by djblets for i18n
   if ! defined(Package['gettext']) {
@@ -154,36 +150,29 @@ class reviewboard::package (
     ensure  => present,
     mode    => '0644',
     content => join($build_reqs, "\n"),
-    require => Python_virtualenv[$venv_path],
+    require => Python::Virtualenv[$venv_path],
   }
 
   # install the above requirements file
-  python_package {"${venv_path},${venv_path}/puppet_build_requirements.txt":
-    ensure            => present,
-    python_prefix     => $venv_path,
-    requirements_file => "${venv_path}/puppet_build_requirements.txt",
-    options           => $build_req_options,
+  python::requirements {"${venv_path}/puppet_build_requirements.txt":
+    virtualenv        => $venv_path,
     require           => [File["${venv_path}/puppet_build_requirements.txt"],
                           Package['uglifyjs'],
                           Package['gettext'],
-                          Python_package["${venv_path},pip>=1.5.1"],
                           ],
   }
 
   if $version == undef {
-    $req = 'ReviewBoard'
+    $ensure_version = 'present'
   } else {
-    $req = "ReviewBoard==${version}"
+    $ensure_version = $version
   }
 
-  python_package {"${venv_path},${req}":
-    ensure        => present,
-    python_prefix => $venv_path,
-    requirements  => $req,
-    options       => ['--allow-unverified',
-                      'ReviewBoard',
-                      ],
-    require       => Python_package["${venv_path},${venv_path}/puppet_build_requirements.txt"],
+  python::pip { 'ReviewBoard':
+    virtualenv    => $venv_path,
+    pkgname       => 'ReviewBoard',
+    ensure        => $ensure_version,
+    require       => Python::Requirements["${venv_path}/puppet_build_requirements.txt"],
   }
 
 }

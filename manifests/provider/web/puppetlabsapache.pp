@@ -25,6 +25,10 @@ define reviewboard::provider::web::puppetlabsapache (
   $venv_python,
   $mod_wsgi_package_name = undef,
   $mod_wsgi_so_name      = undef,
+  $enable_ssl = false,
+  $enable_http = true,
+  $ssl_cert = undef,
+  $ssl_key = undef,
 ) {
 
   $site = $name
@@ -107,14 +111,31 @@ define reviewboard::provider::web::puppetlabsapache (
     },
   ]
 
-  apache::vhost {$vhost:
-    port                => 80,
-    docroot             => "${site}/htdocs",
-    error_documents     => $error_documents,
-    wsgi_script_aliases => $script_aliases,
-    custom_fragment     => 'WSGIPassAuthorization On',
-    directories         => $directories,
-    aliases             => $aliases,
+  if $enable_http {
+    apache::vhost {$vhost:
+      port                => 80,
+      docroot             => "${site}/htdocs",
+      error_documents     => $error_documents,
+      wsgi_script_aliases => $script_aliases,
+      custom_fragment     => 'WSGIPassAuthorization On',
+      directories         => $directories,
+      aliases             => $aliases,
+    }
+  }
+
+  if $enable_ssl {
+    apache::vhost { "$vhost-ssl":
+      port                => 443,
+      ssl                 => true,
+      docroot             => "${site}/htdocs",
+      error_documents     => $error_documents,
+      wsgi_script_aliases => $script_aliases,
+      custom_fragment     => 'WSGIPassAuthorization On',
+      directories         => $directories,
+      aliases             => $aliases,
+      ssl_cert            => $ssl_cert,
+      ssl_key             => $ssl_key,
+    }
   }
 
   # Propogate update events to the service
