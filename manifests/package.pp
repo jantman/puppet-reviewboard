@@ -76,7 +76,7 @@ python::virtualenv { $venv_path :
     systempkgs => true,
     venv_dir   => $venv_path,
     timeout    => 0,
-    requir     => Python::Virtualenv[$base_venv],
+    require    => Python::Virtualenv[$base_venv],
   }
 
 
