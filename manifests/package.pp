@@ -63,20 +63,20 @@ class reviewboard::package (
   # empty base venv, per http://code.google.com/p/modwsgi/wiki/VirtualEnvironments
   # this will be the WSGIPythonHome setting
   python::virtualenv { $base_venv :
-    ensure       => present,
-    version      => 'system',
-    systempkgs   => true,
-    venv_dir     => $base_venv,
-    timeout      => 0,
+    ensure     => present,
+    version    => 'system',
+    systempkgs => true,
+    venv_dir   => $base_venv,
+    timeout    => 0,
   }
 
 python::virtualenv { $venv_path :
-    ensure       => present,
-    version      => 'system',
-    systempkgs   => true,
-    venv_dir     => $venv_path,
-    timeout      => 0,
-    require      => Python::Virtualenv[$base_venv],
+    ensure     => present,
+    version    => 'system',
+    systempkgs => true,
+    venv_dir   => $venv_path,
+    timeout    => 0,
+    requir     => Python::Virtualenv[$base_venv],
   }
 
 
@@ -154,12 +154,12 @@ python::virtualenv { $venv_path :
   }
 
   # install the above requirements file
-  python::requirements {"${venv_path}/puppet_build_requirements.txt":
-    virtualenv        => $venv_path,
-    require           => [File["${venv_path}/puppet_build_requirements.txt"],
-                          Package['uglifyjs'],
-                          Package['gettext'],
-                          ],
+  python::requirements { "${venv_path}/puppet_build_requirements.txt" :
+    virtualenv => $venv_path,
+    require    => [ File["${venv_path}/puppet_build_requirements.txt"],
+                    Package['uglifyjs'],
+                    Package['gettext'],
+                  ],
   }
 
   if $version == undef {
@@ -169,10 +169,10 @@ python::virtualenv { $venv_path :
   }
 
   python::pip { 'ReviewBoard':
-    virtualenv    => $venv_path,
-    pkgname       => 'ReviewBoard',
-    ensure        => $ensure_version,
-    require       => Python::Requirements["${venv_path}/puppet_build_requirements.txt"],
+    ensure     => $ensure_version,
+    virtualenv => $venv_path,
+    pkgname    => 'ReviewBoard',
+    require    => Python::Requirements["${venv_path}/puppet_build_requirements.txt"],
   }
 
 }

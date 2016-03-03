@@ -114,8 +114,8 @@ define reviewboard::site (
   $webuser    = $reviewboard::webuser,
   $enable_ssl = false,
   $enable_http= true,
-  $ssl_cert   = "/etc/ssl/certs/$name.cert",
-  $ssl_key    = "/etc/ssl/$name.key",
+  $ssl_cert   = "/etc/ssl/certs/${name}.cert",
+  $ssl_key    = "/etc/ssl/${name}.key",
 ) {
   include reviewboard
 

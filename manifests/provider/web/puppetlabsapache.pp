@@ -124,7 +124,7 @@ define reviewboard::provider::web::puppetlabsapache (
   }
 
   if $enable_ssl {
-    apache::vhost { "$vhost-ssl":
+    apache::vhost { "${vhost}-ssl":
       port                => 443,
       ssl                 => true,
       docroot             => "${site}/htdocs",
