@@ -33,7 +33,7 @@ describe 'reviewboard::provider::web', :type => :define do
                                                                                                        })
         }
 
-        ['/opt/reviewboard/site/data', '/opt/reviewboard/site/htdocs/media', '/opt/reviewboard/site/htdocs/media/ext', '/opt/reviewboard/site/logs'].each do |f|
+        ['/opt/reviewboard/site/data', '/opt/reviewboard/site/htdocs/media', '/opt/reviewboard/site/htdocs/media/ext', '/opt/reviewboard/site/logs', '/opt/reviewboard/site/static' ].each do |f|
           it { should contain_file(f).with({
                                              :ensure  => 'directory',
                                              :owner   => 'apache',
@@ -105,7 +105,7 @@ describe 'reviewboard::provider::web', :type => :define do
         }
         it { should_not contain_reviewboard__provider__web__simple('/opt/reviewboard/site') }
 
-        ['/otherpath/data', '/otherpath/htdocs/media', '/otherpath/htdocs/media/ext', '/otherpath/logs'].each do |f|
+        ['/otherpath/data', '/otherpath/htdocs/media', '/otherpath/htdocs/media/ext', '/otherpath/logs', '/otherpath/static'].each do |f|
           it { should contain_file(f).with({
                                              :ensure  => 'directory',
                                              :owner   => 'apache',
@@ -149,7 +149,7 @@ describe 'reviewboard::provider::web', :type => :define do
                                                                                              })
         }
 
-        ['/opt/reviewboard/site/data', '/opt/reviewboard/site/htdocs/media', '/opt/reviewboard/site/htdocs/media/ext', '/opt/reviewboard/site/logs'].each do |f|
+        ['/opt/reviewboard/site/data', '/opt/reviewboard/site/htdocs/media', '/opt/reviewboard/site/htdocs/media/ext', '/opt/reviewboard/site/logs', '/opt/reviewboard/site/static'].each do |f|
           it { should contain_file(f).with({
                                              :ensure  => 'directory',
                                              :owner   => 'apache',
@@ -186,7 +186,7 @@ describe 'reviewboard::provider::web', :type => :define do
 
         it { should_not contain_reviewboard__provider__web__simple('/opt/reviewboard/site') }
 
-        ['/opt/reviewboard/site/data', '/opt/reviewboard/site/htdocs/media', '/opt/reviewboard/site/htdocs/media/ext', '/opt/reviewboard/site/logs'].each do |f|
+        ['/opt/reviewboard/site/data', '/opt/reviewboard/site/htdocs/media', '/opt/reviewboard/site/htdocs/media/ext', '/opt/reviewboard/site/logs', '/opt/reviewboard/site/static'].each do |f|
           it { should contain_file(f).with({
                                              :ensure  => 'directory',
                                              :owner   => 'apache',

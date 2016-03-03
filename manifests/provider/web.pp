@@ -26,6 +26,10 @@ define reviewboard::provider::web (
   $venv_python,
   $mod_wsgi_package_name = undef,
   $mod_wsgi_so_name      = undef,
+  $enable_ssl = false,
+  $enable_http = true,
+  $ssl_cert = undef,
+  $ssl_key = undef,
 ) {
 
   $site = $name
@@ -60,6 +64,10 @@ define reviewboard::provider::web (
       venv_python           => $venv_python,
       mod_wsgi_package_name => $mod_wsgi_package_name,
       mod_wsgi_so_name      => $mod_wsgi_so_name,
+      enable_ssl            => $enable_ssl,
+      enable_http           => $enable_http,
+      ssl_cert              => $ssl_cert,
+      ssl_key               => $ssl_key,
     }
 
     $realwebuser = $apache::user
@@ -79,7 +87,7 @@ define reviewboard::provider::web (
   }
 
   # Set web folder ownership
-  file {["${site}/data", "${site}/htdocs/media", "${site}/htdocs/media/ext", "${site}/logs"]:
+  file {["${site}/data", "${site}/htdocs/media", "${site}/htdocs/media/ext", "${site}/logs", "${site}/htdocs/static/ext"]:
     ensure  => directory,
     owner   => $realwebuser,
     notify  => $webservice,

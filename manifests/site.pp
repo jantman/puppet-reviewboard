@@ -80,6 +80,22 @@
 #   and web root / htdocs.
 #   Default: $reviewboard::webuser
 #
+# [*enable_ssl*]
+#   Whether to enable SSL for the site.
+#   Default: false
+#
+# [*enable_http*]
+#   Whether to enable HTTP (non-ssl) for the site.
+#   Default: true
+#
+# [*ssl_cert*]
+#   Certificate file to use for SSL.
+#   Default: /etc/ssl/certs/$name.cert
+#
+# [*ssl_key*]
+#   Private key to use for SSL.
+#   Default:
+#
 #
 define reviewboard::site (
   $site       = $name,
@@ -96,6 +112,10 @@ define reviewboard::site (
   $cache      = 'memcached',
   $cacheinfo  = 'localhost:11211',
   $webuser    = $reviewboard::webuser,
+  $enable_ssl = false,
+  $enable_http= true,
+  $ssl_cert   = "/etc/ssl/certs/${name}.cert",
+  $ssl_key    = "/etc/ssl/${name}.key",
 ) {
   include reviewboard
 
@@ -146,6 +166,16 @@ define reviewboard::site (
     venv_path  => $reviewboard::venv_path,
   }
 
+  # make sure files exist if specified
+  if $enable_ssl {
+    if $ssl_cert {
+      validate_absolute_path($ssl_cert)
+    }
+    if $ssl_key {
+      validate_absolute_path($ssl_key)
+    }
+  }
+
   # Set up the web server
   reviewboard::provider::web {$site:
     vhost                 => $vhost,
@@ -157,6 +187,10 @@ define reviewboard::site (
     mod_wsgi_package_name => $reviewboard::mod_wsgi_package_name,
     mod_wsgi_so_name      => $reviewboard::mod_wsgi_so_name,
     require               => Reviewboard::Site::Install[$site],
+    enable_ssl            => $enable_ssl,
+    enable_http           => $enable_http,
+    ssl_cert              => $ssl_cert,
+    ssl_key               => $ssl_key,
   }
 
 }

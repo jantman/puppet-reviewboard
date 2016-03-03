@@ -175,41 +175,27 @@ describe 'reviewboard::site' do
     context 'application tests' do
       describe 'test prerequisites' do
         test_prereq = <<-EOS.unindent
-          python_virtualenv {'/tmp/rbtest': 
+          python::virtualenv { '/tmp/rbtest':
             ensure     => present,
-            python     => $::python_latest_path,
           }
 
-          # make sure we have an acceptably new pip
-          python_package {'/tmp/rbtest,pip>=1.5.1':
-            ensure        => present,
-            python_prefix => '/tmp/rbtest',
-            requirements  => 'pip>=1.5.1',
-            options       => '--upgrade',
-            require       => Python_virtualenv['/tmp/rbtest'],
-          }
+          python::pip { '/tmp/rbtest,RBTools>=0.6.0' :
+            pkgname       => 'RBTools',
+            ensure        => '0.6.0',
+            virtualenv    => '/tmp/rbtest',
+           }
 
-          python_package {'/tmp/rbtest,RBTools>=0.6.0':
-            ensure        => present,
-            python_prefix => '/tmp/rbtest',
-            requirements  => 'RBTools>=0.6.0',
-            options       => ['--allow-unverified', 'RBTools'],
-            require       => Python_virtualenv['/tmp/rbtest'],
-          }
+          python::pip { '/tmp/rbtest,requests' :
+            pkgname       => 'requests',
+            ensure        => 'present',
+            virtualenv    => '/tmp/rbtest',
+           }
 
-          python_package {'/tmp/rbtest,requests':
-            ensure        => present,
-            python_prefix => '/tmp/rbtest',
-            requirements  => 'requests',
-            require       => Python_virtualenv['/tmp/rbtest'],
-          }
-
-          python_package {'/tmp/rbtest,python-memcached':
-            ensure        => present,
-            python_prefix => '/tmp/rbtest',
-            requirements  => 'python-memcached',
-            require       => Python_virtualenv['/tmp/rbtest'],
-          }
+          python::pip { '/tmp/rbtest,python-memcached' :
+            pkgname       => 'python-memcached',
+            ensure        => 'present',
+            virtualenv    => '/tmp/rbtest',
+           }
 
           class {'memcached':
             max_memory => '10%',
@@ -272,7 +258,7 @@ describe 'reviewboard::site' do
       end
       describe port(11211) do
         it { should be_listening }
-      end                 
+      end
       describe 'writes to memcache' do
         describe command('/tmp/rbtest/bin/python /tmp/rb_test.py -a memcached') do
           its(:exit_status) { should eq 0 }
