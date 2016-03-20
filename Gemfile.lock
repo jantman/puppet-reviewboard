@@ -6,7 +6,7 @@ GIT
       rspec
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     CFPropertyList (2.2.8)
     addressable (2.3.6)
@@ -256,3 +256,6 @@ DEPENDENCIES
   travis
   travis-lint
   vagrant-wrapper
+
+BUNDLED WITH
+   1.11.2
