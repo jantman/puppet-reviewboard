@@ -77,7 +77,7 @@ class reviewboard::package (
 
   # make sure we have an acceptably new pip
   python_package {"${venv_path},pip>=1.5.1":
-    ensure => present,
+    ensure        => present,
     python_prefix => $venv_path,
     requirements  => 'pip>=1.5.1',
     options       => '--upgrade',
