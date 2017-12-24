@@ -1,6 +1,13 @@
 Puppet Reviewboard
 ==================
 
+[![Project Status: Unsupported – The project has reached a stable, usable state but the author(s) have ceased all work on it. A new maintainer may be desired.](http://www.repostatus.org/badges/latest/unsupported.svg)](http://www.repostatus.org/#unsupported)
+
+DEPRECATED AND UNSUPPORTED
+==========================
+
+**I don't use this module anymore, and haven't in many years. I'm leaving it here since I don't like deleting repos (especially in case someone is, somehow, still using it) but it probably doesn't work anymore and I don't intend on resurrecting it. If you have any questions, please contact me via the email on my GitHub profile.**
+
 Manage an install of [Reviewboard](http://www.reviewboard.org)
 
 To install include the class 'reviewboard' in your manifest
